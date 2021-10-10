@@ -3,14 +3,16 @@ import functools
 from copy import copy
 from typing import Any, Tuple, Union
 
+from logexdec.settings import (APP_LOGGER_NAME, CLASS_LOGGER_ATTR_NAME,
+                               FUNC_LOGGER_KWARG_NAME)
 from logexdec.utils import find_or_create_logger, log
 
 
 def logex(
     *names_or_func,
-    class_logger_attr_name: str = "logger",
-    func_logger_kwarg_name: str = "logger",
-    app_logger_name: str = "log_exception",
+    class_logger_attr_name: str = CLASS_LOGGER_ATTR_NAME,
+    func_logger_kwarg_name: str = FUNC_LOGGER_KWARG_NAME,
+    app_logger_name: str = APP_LOGGER_NAME,
     return_value: Any = None,
     exclude: Union[Tuple[Exception, ...], Exception] = (),
     log_exclude: bool = True
