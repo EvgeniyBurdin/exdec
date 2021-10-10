@@ -38,7 +38,7 @@ def find_logger(
 
 
 def log(
-    logger: Callable,
+    logger: Logger,
     func: Callable, func_args: tuple, func_kwargs: Dict[str, Any],
     main_message: str,
     error: Exception,
