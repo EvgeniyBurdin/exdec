@@ -11,6 +11,9 @@ CLASS_LOGGER_ATTR_NAME = getenv(
 FUNC_LOGGER_KWARG_NAME = getenv(
     "DEFAULT_FUNC_LOGGER_KWARG_NAME", CLASS_LOGGER_ATTR_NAME
 )
+MAIN_MESSAGE = getenv(
+    "DEFAULT_MAIN_MESSAGE", "Exception occured:"
+)
 
 # Default logger
 logger = getLogger(APP_LOGGER_NAME)

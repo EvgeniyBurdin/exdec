@@ -25,7 +25,7 @@ def logexc(*args, **kwargs):  # define new decorator
 )
 async def foo():
 
-    raise SomeException1("EXCEPTION MESSAGE!!!")
+    raise SomeException1("Exception message 1")
 
     return "foo result"
 
@@ -35,7 +35,7 @@ class MyClass:
 
     @logexc
     async def bar(self, i):
-
+        raise SomeException1("Exception message 2")
         return "bar result"
 
 

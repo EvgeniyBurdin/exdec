@@ -1,11 +1,12 @@
 import asyncio
 import functools
 from copy import copy
-from typing import Any, Tuple, Union
+from typing import Any, Callable, Tuple, Union
 
-from logexdec.settings import (APP_LOGGER_NAME, CLASS_LOGGER_ATTR_NAME,
-                               FUNC_LOGGER_KWARG_NAME)
-from logexdec.utils import find_or_create_logger, log
+from logexdec.defaults import (APP_LOGGER_NAME, CLASS_LOGGER_ATTR_NAME,
+                               FUNC_LOGGER_KWARG_NAME, MAIN_MESSAGE)
+from logexdec.utils import find_logger as _find_logger
+from logexdec.utils import log as _log
 
 
 def logex(
@@ -13,24 +14,28 @@ def logex(
     class_logger_attr_name: str = CLASS_LOGGER_ATTR_NAME,
     func_logger_kwarg_name: str = FUNC_LOGGER_KWARG_NAME,
     app_logger_name: str = APP_LOGGER_NAME,
+    main_message: str = MAIN_MESSAGE,
     return_value: Any = None,
     exclude: Union[Tuple[Exception, ...], Exception] = (),
-    log_exclude: bool = True
+    log_exclude: bool = True,
+    find_logger: Callable = _find_logger,
+    log: Callable = _log,
 ):
     def _decor(func):
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
-            logger = find_or_create_logger(
+            logger = find_logger(
                 func, args, kwargs,
-                class_logger_attr_name, func_logger_kwarg_name,
+                class_logger_attr_name,
+                func_logger_kwarg_name,
                 app_logger_name,
             )
             log_kwargs = {
                 "logger": logger,
                 "func": func, "func_args": args, "func_kwargs": kwargs,
-
+                "main_message": main_message,
             }
             if asyncio.iscoroutinefunction(func):
                 async def async_func():
