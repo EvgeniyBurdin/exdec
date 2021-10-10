@@ -16,18 +16,18 @@ def logex(
     app_logger_name: str = APP_LOGGER_NAME,
     main_message: str = MAIN_MESSAGE,
     return_value: Any = None,
-    exclude: Union[Tuple[Exception, ...], Exception] = (),
-    is_log_exclude: bool = True,
-    find_logger: Callable = _find_logger,
-    log_error: Callable = _log_error,
-    is_exc_info: bool = False,
+    raise_exceptions: Union[Tuple[Exception, ...], Exception] = (),
+    is_log_raised: bool = True,
+    find_logger_func: Callable = _find_logger,
+    log_error_func: Callable = _log_error,
+    exc_info: bool = False,
 ):
     def _decor(func):
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
-            logger = find_logger(
+            logger = find_logger_func(
                 func, args, kwargs,
                 class_logger_attr_name,
                 func_logger_kwarg_name,
@@ -36,29 +36,29 @@ def logex(
             log_kwargs = {
                 "logger": logger,
                 "func": func, "func_args": args, "func_kwargs": kwargs,
-                "main_message": main_message, "is_exc_info": is_exc_info,
+                "main_message": main_message, "exc_info": exc_info,
             }
             if asyncio.iscoroutinefunction(func):
                 async def async_func():
                     try:
                         return await func(*args, **kwargs)
-                    except exclude as exc_info:
-                        if is_log_exclude:
-                            log_error(**log_kwargs, exc_info=exc_info)
+                    except raise_exceptions as error:
+                        if is_log_raised:
+                            log_error_func(**log_kwargs, error=error)
                         raise
-                    except Exception as exc_info:
-                        log_error(**log_kwargs, exc_info=exc_info)
+                    except Exception as error:
+                        log_error_func(**log_kwargs, error=error)
                         return copy(return_value)
                 return async_func()
             else:
                 try:
                     return func(*args, **kwargs)
-                except exclude as exc_info:
-                    if is_log_exclude:
-                        log_error(**log_kwargs, exc_info=exc_info)
+                except raise_exceptions as error:
+                    if is_log_raised:
+                        log_error_func(**log_kwargs, error=error)
                     raise
-                except Exception as exc_info:
-                    log_error(**log_kwargs, exc_info=exc_info)
+                except Exception as error:
+                    log_error_func(**log_kwargs, error=error)
                     return copy(return_value)
 
         return wrapper

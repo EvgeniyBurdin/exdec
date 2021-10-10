@@ -19,7 +19,7 @@ def logexc(*args, **kwargs):  # define new decorator
 @logexc(
     return_value=[],
     # exclude=(SomeException1, SomeException2), is_log_exclude=True
-    is_exc_info=True,
+    exc_info=True,
 )
 async def foo():
 
@@ -31,7 +31,7 @@ class MyClass:
     @logexc
     async def bar(self, i):
 
-        raise SomeException1("Exception message 2")
+        raise SomeException2("Exception message 2")
 
 
 if __name__ == "__main__":

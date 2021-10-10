@@ -15,6 +15,7 @@ MAIN_MESSAGE = getenv(
     "DEFAULT_MAIN_MESSAGE", "Exception occured: "
 )
 
+
 # Default logger
 logger = logging.getLogger(APP_LOGGER_NAME)
 
