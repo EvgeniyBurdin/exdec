@@ -1,6 +1,6 @@
 import asyncio
 
-from logexdec.decorator import logex as _logexc
+from logexdec.decorator import logex  # as _logex
 
 
 class SomeException1(Exception):
@@ -11,12 +11,12 @@ class SomeException2(Exception):
     pass
 
 
-def logexc(*args, **kwargs):  # define new decorator
-    # kwargs["app_logger_name"] = "app_name"
-    return _logexc(*args, **kwargs)
+# def logex(*args, **kwargs):  # define new decorator
+#     # kwargs["app_logger_name"] = "app_name"
+#     return _logex(*args, **kwargs)
 
 
-@logexc(
+@logex(
     return_value=[],
     # exclude=(SomeException1, SomeException2), is_log_exclude=True
     exc_info=True,
@@ -28,7 +28,7 @@ async def foo():
 
 class MyClass:
 
-    @logexc
+    @logex(raise_exceptions=SomeException2, is_log_raised=True)
     async def bar(self, i):
 
         raise SomeException2("Exception message 2")
