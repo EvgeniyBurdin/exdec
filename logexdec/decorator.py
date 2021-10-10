@@ -11,9 +11,9 @@ def logex(
     class_logger_attr_name: str = "logger",
     func_logger_kwarg_name: str = "logger",
     app_logger_name: str = "log_exception",
-    return_on_exception: Any = None,
+    return_value: Any = None,
     exclude: Union[Tuple[Exception, ...], Exception] = (),
-    is_log_for_exclude: bool = True
+    log_exclude: bool = True
 ):
     def _decor(func):
 
@@ -25,35 +25,33 @@ def logex(
                 class_logger_attr_name, func_logger_kwarg_name,
                 app_logger_name,
             )
-
             log_kwargs = {
                 "logger": logger,
                 "func": func, "func_args": args, "func_kwargs": kwargs,
 
             }
-
             if asyncio.iscoroutinefunction(func):
                 async def async_func():
                     try:
                         return await func(*args, **kwargs)
                     except exclude as error:
-                        if is_log_for_exclude:
+                        if log_exclude:
                             log(**log_kwargs, error=error)
                         raise
                     except Exception as error:
                         log(**log_kwargs, error=error)
-                        return copy(return_on_exception)
+                        return copy(return_value)
                 return async_func()
             else:
                 try:
                     return func(*args, **kwargs)
                 except exclude as error:
-                    if is_log_for_exclude:
+                    if log_exclude:
                         log(**log_kwargs, error=error)
                     raise
                 except Exception as error:
                     log(**log_kwargs, error=error)
-                    return copy(return_on_exception)
+                    return copy(return_value)
 
         return wrapper
 

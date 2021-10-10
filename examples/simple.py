@@ -20,8 +20,8 @@ def logexc(*args, **kwargs):  # define new decorator
 
 
 @logexc(
-    return_on_exception=[],  # exclude=(SomeException1, SomeException2),
-    is_log_for_exclude=True
+    return_value=[],
+    exclude=(SomeException1, SomeException2), log_exclude=True
 )
 async def foo():
 
