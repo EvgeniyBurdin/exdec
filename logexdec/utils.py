@@ -14,7 +14,7 @@ def find_logger(
     logger = None
 
     # A logger can be an "attribute" of a method class.
-    # The name of the "attribute" in class_logger_attr_name.
+    # The name of the "attribute" in logger_attr_name.
     if func_args and hasattr(func_args[0], func.__name__) \
        and func.__qualname__.startswith(func_args[0].__class__.__name__):
         _logger = getattr(func_args[0], logger_attr_name, None)
@@ -22,13 +22,13 @@ def find_logger(
             logger = _logger
 
     # The logger can be passed to a function as a "named argument".
-    # The name of the "named argument" in func_logger_kwarg_name.
+    # The name of the "named argument" in logger_kwarg_name.
     _logger = func_kwargs.get(logger_kwarg_name)
     if isinstance(_logger, Logger):
         logger = _logger
 
     # If the logger is not already defined, we will take "application logger".
-    # The name of the "application logger" in app_logger_name.
+    # The name of the "application logger" in app_name.
     if logger is None:
         logger = getLogger(app_name)
 
