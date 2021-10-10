@@ -28,19 +28,19 @@ async def foo():
 
     raise SomeException1("Exception message 1")
 
-    return "foo result"
-
 
 class MyClass:
+
     logger = logging.getLogger("MyClass")
 
     @logexc
     async def bar(self, i):
+
         raise SomeException1("Exception message 2")
-        return "bar result"
 
 
 if __name__ == "__main__":
+
     print("="*10)
     print(asyncio.run(foo()))
 
