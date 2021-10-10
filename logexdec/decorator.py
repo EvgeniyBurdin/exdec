@@ -6,7 +6,7 @@ from typing import Any, Callable, Tuple, Union
 from logexdec.defaults import (APP_LOGGER_NAME, CLASS_LOGGER_ATTR_NAME,
                                FUNC_LOGGER_KWARG_NAME, MAIN_MESSAGE)
 from logexdec.utils import find_logger as _find_logger
-from logexdec.utils import log as _log
+from logexdec.utils import log_error as _log_error
 
 
 def logex(
@@ -17,9 +17,10 @@ def logex(
     main_message: str = MAIN_MESSAGE,
     return_value: Any = None,
     exclude: Union[Tuple[Exception, ...], Exception] = (),
-    log_exclude: bool = True,
+    is_log_exclude: bool = True,
     find_logger: Callable = _find_logger,
-    log: Callable = _log,
+    log_error: Callable = _log_error,
+    is_exc_info: bool = False,
 ):
     def _decor(func):
 
@@ -35,29 +36,29 @@ def logex(
             log_kwargs = {
                 "logger": logger,
                 "func": func, "func_args": args, "func_kwargs": kwargs,
-                "main_message": main_message,
+                "main_message": main_message, "is_exc_info": is_exc_info,
             }
             if asyncio.iscoroutinefunction(func):
                 async def async_func():
                     try:
                         return await func(*args, **kwargs)
-                    except exclude as error:
-                        if log_exclude:
-                            log(**log_kwargs, error=error)
+                    except exclude as exc_info:
+                        if is_log_exclude:
+                            log_error(**log_kwargs, exc_info=exc_info)
                         raise
-                    except Exception as error:
-                        log(**log_kwargs, error=error)
+                    except Exception as exc_info:
+                        log_error(**log_kwargs, exc_info=exc_info)
                         return copy(return_value)
                 return async_func()
             else:
                 try:
                     return func(*args, **kwargs)
-                except exclude as error:
-                    if log_exclude:
-                        log(**log_kwargs, error=error)
+                except exclude as exc_info:
+                    if is_log_exclude:
+                        log_error(**log_kwargs, exc_info=exc_info)
                     raise
-                except Exception as error:
-                    log(**log_kwargs, error=error)
+                except Exception as exc_info:
+                    log_error(**log_kwargs, exc_info=exc_info)
                     return copy(return_value)
 
         return wrapper

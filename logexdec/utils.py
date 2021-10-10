@@ -37,16 +37,24 @@ def find_logger(
     return logger
 
 
-def log(
+def log_error(
     logger: Logger,
     func: Callable, func_args: tuple, func_kwargs: Dict[str, Any],
-    main_message: str,
-    error: Exception,
+    main_message: str, is_exc_info: bool,
+    exc_info: Exception,
 ):
     extra = {
         "func": func,
         "func_args": func_args,
         "func_kwargs": func_kwargs,
-        "error": error,
+        "error": exc_info,
     }
-    logger.error(f"{main_message} {error}", extra=extra)
+    msg = main_message
+
+    if is_exc_info:
+        exc_info = exc_info
+    else:
+        msg = f"{msg}{exc_info}"
+        exc_info = None
+
+    logger.error(msg=msg, exc_info=exc_info, extra=extra)
