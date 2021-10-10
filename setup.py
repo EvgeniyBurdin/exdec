@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='logexdec',
-    version='0.0.4',
+    version='0.1.0',
     license='MIT',
     author='Evgeniy Burdin',
     author_email='e.s.burdin@gmail.com',
