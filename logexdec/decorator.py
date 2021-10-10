@@ -3,21 +3,21 @@ import functools
 from copy import copy
 from typing import Any, Callable, Tuple, Union
 
-from logexdec.defaults import (APP_LOGGER_NAME, CLASS_LOGGER_ATTR_NAME,
-                               FUNC_LOGGER_KWARG_NAME, MAIN_MESSAGE)
+from logexdec.defaults import (APP_NAME, LOGGER_ATTR_NAME, LOGGER_KWARG_NAME,
+                               MAIN_LOG_MESSAGE)
 from logexdec.utils import find_logger as _find_logger
 from logexdec.utils import log_error as _log_error
 
 
 def logex(
     *names_or_func,
-    class_logger_attr_name: str = CLASS_LOGGER_ATTR_NAME,
-    func_logger_kwarg_name: str = FUNC_LOGGER_KWARG_NAME,
-    app_logger_name: str = APP_LOGGER_NAME,
-    main_message: str = MAIN_MESSAGE,
+    logger_attr_name: str = LOGGER_ATTR_NAME,
+    logger_kwarg_name: str = LOGGER_KWARG_NAME,
+    app_name: str = APP_NAME,
+    main_log_message: str = MAIN_LOG_MESSAGE,
     return_value: Any = None,
-    raise_exceptions: Union[Tuple[Exception, ...], Exception] = (),
-    is_log_raised: bool = False,
+    reraise_exceptions: Union[Tuple[Exception, ...], Exception] = (),
+    log_reraised: bool = False,
     find_logger_func: Callable = _find_logger,
     log_error_func: Callable = _log_error,
     exc_info: bool = False,
@@ -29,21 +29,19 @@ def logex(
 
             logger = find_logger_func(
                 func, args, kwargs,
-                class_logger_attr_name,
-                func_logger_kwarg_name,
-                app_logger_name,
+                logger_attr_name, logger_kwarg_name, app_name,
             )
             log_kwargs = {
                 "logger": logger,
                 "func": func, "func_args": args, "func_kwargs": kwargs,
-                "main_message": main_message, "exc_info": exc_info,
+                "main_log_message": main_log_message, "exc_info": exc_info,
             }
             if asyncio.iscoroutinefunction(func):
                 async def async_func():
                     try:
                         return await func(*args, **kwargs)
-                    except raise_exceptions as error:
-                        if is_log_raised:
+                    except reraise_exceptions as error:
+                        if log_reraised:
                             log_error_func(**log_kwargs, error=error)
                         raise
                     except Exception as error:
@@ -53,8 +51,8 @@ def logex(
             else:
                 try:
                     return func(*args, **kwargs)
-                except raise_exceptions as error:
-                    if is_log_raised:
+                except reraise_exceptions as error:
+                    if log_reraised:
                         log_error_func(**log_kwargs, error=error)
                     raise
                 except Exception as error:

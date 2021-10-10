@@ -2,22 +2,22 @@ import logging
 from os import getenv
 
 
-APP_LOGGER_NAME = getenv("DEFAULT_APP_LOGGER_NAME", "logexdec")
+APP_NAME = getenv("DEFAULT_APP_NAME", "logexdec")
 
-CLASS_LOGGER_ATTR_NAME = getenv(
-    "DEFAULT_CLASS_LOGGER_ATTR_NAME", "logger"
+LOGGER_ATTR_NAME = getenv(
+    "DEFAULT_LOGGER_ATTR_NAME", "logger"
 )
 
-FUNC_LOGGER_KWARG_NAME = getenv(
-    "DEFAULT_FUNC_LOGGER_KWARG_NAME", CLASS_LOGGER_ATTR_NAME
+LOGGER_KWARG_NAME = getenv(
+    "DEFAULT_LOGGER_KWARG_NAME", LOGGER_ATTR_NAME
 )
-MAIN_MESSAGE = getenv(
-    "DEFAULT_MAIN_MESSAGE", "Exception occured: "
+MAIN_LOG_MESSAGE = getenv(
+    "DEFAULT_MAIN_LOG_MESSAGE", "Exception occured: "
 )
 
 
 # Default logger
-logger = logging.getLogger(APP_LOGGER_NAME)
+logger = logging.getLogger(APP_NAME)
 
 _log_format = "%(asctime)s - [%(levelname)s] - %(name)s - "
 _log_format += "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
