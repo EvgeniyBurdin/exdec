@@ -1,4 +1,4 @@
-from logging import getLogger
+import logging
 from os import getenv
 
 
@@ -16,4 +16,12 @@ MAIN_MESSAGE = getenv(
 )
 
 # Default logger
-logger = getLogger(APP_LOGGER_NAME)
+logger = logging.getLogger(APP_LOGGER_NAME)
+
+_log_format = "%(asctime)s - [%(levelname)s] - %(name)s - "
+_log_format += "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
+
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.INFO)
+stream_handler.setFormatter(logging.Formatter(_log_format))
+logger.addHandler(stream_handler)
