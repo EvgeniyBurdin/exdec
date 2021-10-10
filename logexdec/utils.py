@@ -51,9 +51,7 @@ def log_error(
     }
     msg = main_message
 
-    if is_exc_info:
-        exc_info = exc_info
-    else:
+    if not is_exc_info:
         msg = f"{msg}{exc_info}"
         exc_info = None
 

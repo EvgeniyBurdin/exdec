@@ -1,9 +1,6 @@
 import asyncio
-import logging
 
 from logexdec.decorator import logex as _logexc
-
-logger = logging.getLogger("app_name")
 
 
 class SomeException1(Exception):
@@ -30,8 +27,6 @@ async def foo():
 
 
 class MyClass:
-
-    logger = logging.getLogger("MyClass")
 
     @logexc
     async def bar(self, i):
