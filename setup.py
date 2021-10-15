@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='logdec',
-    version='0.1.1',
+    version='0.1.2',
     license='MIT',
     author='Evgeniy Burdin',
     author_email='e.s.burdin@gmail.com',
