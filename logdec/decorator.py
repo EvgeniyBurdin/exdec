@@ -3,10 +3,10 @@ import functools
 from copy import copy
 from typing import Any, Callable, Tuple, Union
 
-from logexdec.defaults import (APP_NAME, LOGGER_ATTR_NAME, LOGGER_KWARG_NAME,
-                               MAIN_LOG_MESSAGE)
-from logexdec.utils import find_logger as _find_logger
-from logexdec.utils import log_error as _log_error
+from .defaults import (APP_NAME, LOGGER_ATTR_NAME, LOGGER_KWARG_NAME,
+                       MAIN_LOG_MESSAGE)
+from .utils import find_logger as _find_logger
+from .utils import log_error as _log_error
 
 
 def logex(

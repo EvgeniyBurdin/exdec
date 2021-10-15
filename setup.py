@@ -3,12 +3,12 @@ from os.path import dirname, join
 from setuptools import setup
 
 setup(
-    name='logexdec',
+    name='logdec',
     version='0.1.0',
     license='MIT',
     author='Evgeniy Burdin',
     author_email='e.s.burdin@gmail.com',
-    packages=['logexdec'],
+    packages=['logdec'],
     description='Decorator for logging exceptions in functions and methods.',
     long_description=open(join(dirname(__file__), 'README.md')).read(),
     long_description_content_type="text/markdown",

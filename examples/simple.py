@@ -1,6 +1,6 @@
 import asyncio
 
-from logexdec.decorator import logex
+from logdec.decorator import logex
 
 
 class SomeException1(Exception):
