@@ -27,14 +27,13 @@ def logex(
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
-            logger = find_logger_func(
-                func, args, kwargs,
-                logger_attr_name, logger_kwarg_name, app_name,
-            )
             log_kwargs = {
-                "logger": logger,
                 "func": func, "func_args": args, "func_kwargs": kwargs,
                 "main_log_message": main_log_message, "exc_info": exc_info,
+                "find_logger_func": find_logger_func,
+                "logger_attr_name": logger_attr_name,
+                "logger_kwarg_name": logger_kwarg_name,
+                "app_name": app_name,
             }
 
             if asyncio.iscoroutinefunction(func):

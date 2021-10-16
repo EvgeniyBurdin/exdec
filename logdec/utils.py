@@ -36,11 +36,18 @@ def find_logger(
 
 
 def log_error(
-    logger: Logger,
     func: Callable, func_args: tuple, func_kwargs: Dict[str, Any],
     main_log_message: str, exc_info: bool,
+    find_logger_func: Callable,
+    logger_attr_name: str,
+    logger_kwarg_name: str,
+    app_name: str,
     error: Exception,
 ):
+    logger = find_logger_func(
+        func, func_args, func_kwargs,
+        logger_attr_name, logger_kwarg_name, app_name,
+    )
     extra = {
         "func": func,
         "func_args": func_args,
