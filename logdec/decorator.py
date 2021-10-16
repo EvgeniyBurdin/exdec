@@ -1,61 +1,40 @@
 import asyncio
 import functools
-from copy import copy
-from typing import Any, Callable, Tuple, Union
+from typing import Any, Tuple, Union
 
-from .defaults import (APP_NAME, LOGGER_ATTR_NAME, LOGGER_KWARG_NAME,
-                       MAIN_LOG_MESSAGE)
-from .utils import find_logger as _find_logger
-from .utils import log_func as _log_func
+from .utils import FuncInfo, Settings
+
+settings = Settings()
 
 
 def logex(
     *names_or_func,
-    logger_attr_name: str = LOGGER_ATTR_NAME,
-    logger_kwarg_name: str = LOGGER_KWARG_NAME,
-    app_name: str = APP_NAME,
-    main_log_message: str = MAIN_LOG_MESSAGE,
     reraise: Union[Tuple[Exception, ...], Exception] = (),
     return_value: Any = None,
-    is_log_reraise: bool = False,
-    find_logger_func: Callable = _find_logger,
-    log_func: Callable = _log_func,
-    exc_info: bool = False,
+    settings: Settings = settings,
 ):
     def _decor(func):
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
-            log_kwargs = {
-                "func": func, "func_args": args, "func_kwargs": kwargs,
-                "main_log_message": main_log_message, "exc_info": exc_info,
-                "find_logger_func": find_logger_func,
-                "logger_attr_name": logger_attr_name,
-                "logger_kwarg_name": logger_kwarg_name,
-                "app_name": app_name,
-            }
-
-            def handling_exception(exc) -> Any:
-                if isinstance(exc, reraise):
-                    if is_log_reraise:
-                        log_func(**log_kwargs, error=exc)
-                    raise
-                log_func(**log_kwargs, error=exc)
-                return copy(return_value)
+            func_info = FuncInfo(
+                func=func, args=args, kwargs=kwargs,
+                reraise=reraise, return_value=return_value,
+            )
 
             if asyncio.iscoroutinefunction(func):
                 async def async_func():
                     try:
                         return await func(*args, **kwargs)
                     except Exception as exc:
-                        return handling_exception(exc)
+                        return settings.handling_exception(func_info, exc)
                 return async_func()
             else:
                 try:
                     return func(*args, **kwargs)
                 except Exception as exc:
-                    return handling_exception(exc)
+                    return settings.handling_exception(func_info, exc)
 
         return wrapper
 
