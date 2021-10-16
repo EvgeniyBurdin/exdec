@@ -1,7 +1,7 @@
 from copy import copy
 from dataclasses import dataclass
 from logging import Logger, getLogger
-from typing import Any, Callable, Tuple, Union
+from typing import Any, Callable, Optional, Tuple, Union
 
 from .defaults import (APP_NAME, LOGGER_ATTR_NAME, LOGGER_KWARG_NAME,
                        MAIN_LOG_MESSAGE)
@@ -32,36 +32,32 @@ class LogDec:
         self.main_log_message = main_log_message
         self.is_log_reraise = is_log_reraise
 
+    def get_logger_from_args(self, func, func_args) -> Optional[Logger]:
+
+        if func_args and hasattr(func_args[0], func.__name__) \
+           and func.__qualname__.startswith(func_args[0].__class__.__name__):
+            logger = getattr(func_args[0], self.logger_attr_name, None)
+            if isinstance(logger, Logger):
+                return logger
+
     def find_logger_func(self, func_info: FuncInfo) -> Logger:
         """ Searches for an instance of the logger in class attributes, in named
             function arguments, and in the application.
 
             Returns the found logger.
         """
-        logger = None
-
         # A logger can be an "attribute" of a method class.
         # The name of the "attribute" in logger_attr_name.
-        args = func_info.args
-        func = func_info.func
-        if args and hasattr(args[0], func_info.func.__name__) \
-           and func.__qualname__.startswith(args[0].__class__.__name__):
-            _logger = getattr(args[0], self.logger_attr_name, None)
-            if isinstance(_logger, Logger):
-                logger = _logger
+        logger = self.get_logger_from_args(func_info.func, func_info.args)
 
         # The logger can be passed to a function as a "named argument".
         # The name of the "named argument" in logger_kwarg_name.
         _logger = func_info.kwargs.get(self.logger_kwarg_name)
-        if isinstance(_logger, Logger):
-            logger = _logger
+        logger = _logger if isinstance(_logger, Logger) else logger
 
         # If the logger is not already defined, we will take "application
         # logger". The name of the "application logger" in app_name.
-        if logger is None:
-            logger = getLogger(self.app_name)
-
-        return logger
+        return getLogger(self.app_name) if logger is None else logger
 
     def log_func(self, func_info: FuncInfo, exc: Exception):
 
