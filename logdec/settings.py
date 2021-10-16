@@ -17,7 +17,7 @@ class FuncInfo:
     exc_info: bool
 
 
-class Settings:
+class LogDec:
     def __init__(
         self,
         logger_attr_name: str = LOGGER_ATTR_NAME,

@@ -1,7 +1,6 @@
 import logging
 from os import getenv
 
-
 APP_NAME = getenv("DEFAULT_APP_NAME", "logexdec")
 LOGGER_ATTR_NAME = getenv("DEFAULT_LOGGER_ATTR_NAME", "logger")
 LOGGER_KWARG_NAME = getenv("DEFAULT_LOGGER_KWARG_NAME", LOGGER_ATTR_NAME)

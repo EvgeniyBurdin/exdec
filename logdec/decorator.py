@@ -2,17 +2,17 @@ import asyncio
 import functools
 from typing import Any, Tuple, Union
 
-from .utils import FuncInfo, Settings
+from .settings import FuncInfo, LogDec
 
-settings = Settings()
+log_dec = LogDec()
 
 
 def logex(
     *names_or_func,
     reraise: Union[Tuple[Exception, ...], Exception] = (),
-    return_value: Any = None,
-    exc_info: bool = False,
-    settings: Settings = settings,
+    return_value: Any = None,  # return value for no reraise
+    exc_info: bool = False,    # whether to include traceback in the log
+    log_dec: LogDec = log_dec,
 ):
     def _decor(func):
 
@@ -29,13 +29,13 @@ def logex(
                     try:
                         return await func(*args, **kwargs)
                     except Exception as exc:
-                        return settings.handling_exception(func_info, exc)
+                        return log_dec.handling_exception(func_info, exc)
                 return async_func()
             else:
                 try:
                     return func(*args, **kwargs)
                 except Exception as exc:
-                    return settings.handling_exception(func_info, exc)
+                    return log_dec.handling_exception(func_info, exc)
 
         return wrapper
 
