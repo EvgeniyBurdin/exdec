@@ -17,7 +17,7 @@ def logex(
     main_log_message: str = MAIN_LOG_MESSAGE,
     not_reraise: Union[Tuple[Exception, ...], Exception] = (),
     return_value: Any = None,
-    log_reraised: bool = False,
+    log_reraised: bool = True,
     find_logger_func: Callable = _find_logger,
     log_error_func: Callable = _log_error,
     exc_info: bool = False,
