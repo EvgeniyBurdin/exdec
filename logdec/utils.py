@@ -35,7 +35,7 @@ def find_logger(
     return logger
 
 
-def log_error(
+def log_func(
     func: Callable, func_args: tuple, func_kwargs: Dict[str, Any],
     main_log_message: str, exc_info: bool,
     find_logger_func: Callable,

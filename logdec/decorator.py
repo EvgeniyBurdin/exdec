@@ -6,7 +6,7 @@ from typing import Any, Callable, Tuple, Union
 from .defaults import (APP_NAME, LOGGER_ATTR_NAME, LOGGER_KWARG_NAME,
                        MAIN_LOG_MESSAGE)
 from .utils import find_logger as _find_logger
-from .utils import log_error as _log_error
+from .utils import log_func as _log_func
 
 
 def logex(
@@ -15,11 +15,11 @@ def logex(
     logger_kwarg_name: str = LOGGER_KWARG_NAME,
     app_name: str = APP_NAME,
     main_log_message: str = MAIN_LOG_MESSAGE,
-    not_reraise: Union[Tuple[Exception, ...], Exception] = (),
+    reraise: Union[Tuple[Exception, ...], Exception] = (),
     return_value: Any = None,
-    log_reraised: bool = True,
+    is_log_reraise: bool = False,
     find_logger_func: Callable = _find_logger,
-    log_error_func: Callable = _log_error,
+    log_func: Callable = _log_func,
     exc_info: bool = False,
 ):
     def _decor(func):
@@ -40,24 +40,24 @@ def logex(
                 async def async_func():
                     try:
                         return await func(*args, **kwargs)
-                    except not_reraise as error:
-                        log_error_func(**log_kwargs, error=error)
-                        return copy(return_value)
-                    except Exception as error:
-                        if log_reraised:
-                            log_error_func(**log_kwargs, error=error)
+                    except reraise as error:
+                        if is_log_reraise:
+                            log_func(**log_kwargs, error=error)
                         raise
+                    except Exception as error:
+                        log_func(**log_kwargs, error=error)
+                        return copy(return_value)
                 return async_func()
             else:
                 try:
                     return func(*args, **kwargs)
-                except not_reraise as error:
-                    log_error_func(**log_kwargs, error=error)
-                    return copy(return_value)
-                except Exception as error:
-                    if log_reraised:
-                        log_error_func(**log_kwargs, error=error)
+                except reraise as error:
+                    if is_log_reraise:
+                        log_func(**log_kwargs, error=error)
                     raise
+                except Exception as error:
+                    log_func(**log_kwargs, error=error)
+                    return copy(return_value)
 
         return wrapper
 

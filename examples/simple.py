@@ -11,7 +11,7 @@ class SomeException2(Exception):
     pass
 
 
-@logex(not_reraise=(SomeException1, SomeException2), return_value=[])
+@logex(reraise=(SomeException1, SomeException2), return_value=[])
 async def foo():
 
     raise SomeException1("Exception message 1")
