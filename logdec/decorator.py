@@ -11,6 +11,7 @@ def logex(
     *names_or_func,
     reraise: Union[Tuple[Exception, ...], Exception] = (),
     return_value: Any = None,
+    exc_info: bool = False,
     settings: Settings = settings,
 ):
     def _decor(func):
@@ -20,7 +21,7 @@ def logex(
 
             func_info = FuncInfo(
                 func=func, args=args, kwargs=kwargs,
-                reraise=reraise, return_value=return_value,
+                reraise=reraise, return_value=return_value, exc_info=exc_info,
             )
 
             if asyncio.iscoroutinefunction(func):
