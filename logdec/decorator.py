@@ -15,8 +15,8 @@ def logex(
     logger_kwarg_name: str = LOGGER_KWARG_NAME,
     app_name: str = APP_NAME,
     main_log_message: str = MAIN_LOG_MESSAGE,
+    not_reraise: Union[Tuple[Exception, ...], Exception] = (),
     return_value: Any = None,
-    reraise_exceptions: Union[Tuple[Exception, ...], Exception] = (),
     log_reraised: bool = False,
     find_logger_func: Callable = _find_logger,
     log_error_func: Callable = _log_error,
@@ -36,28 +36,29 @@ def logex(
                 "func": func, "func_args": args, "func_kwargs": kwargs,
                 "main_log_message": main_log_message, "exc_info": exc_info,
             }
+
             if asyncio.iscoroutinefunction(func):
                 async def async_func():
                     try:
                         return await func(*args, **kwargs)
-                    except reraise_exceptions as error:
+                    except not_reraise as error:
+                        log_error_func(**log_kwargs, error=error)
+                        return copy(return_value)
+                    except Exception as error:
                         if log_reraised:
                             log_error_func(**log_kwargs, error=error)
                         raise
-                    except Exception as error:
-                        log_error_func(**log_kwargs, error=error)
-                        return copy(return_value)
                 return async_func()
             else:
                 try:
                     return func(*args, **kwargs)
-                except reraise_exceptions as error:
+                except not_reraise as error:
+                    log_error_func(**log_kwargs, error=error)
+                    return copy(return_value)
+                except Exception as error:
                     if log_reraised:
                         log_error_func(**log_kwargs, error=error)
                     raise
-                except Exception as error:
-                    log_error_func(**log_kwargs, error=error)
-                    return copy(return_value)
 
         return wrapper
 
