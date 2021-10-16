@@ -15,6 +15,7 @@ class FuncInfo:
     reraise: Union[Tuple[Exception, ...], Exception]
     return_value: Any
     exc_info: bool
+    owner_instance: Optional[object] = None
 
 
 class LogDec:
@@ -32,22 +33,25 @@ class LogDec:
         self.main_log_message = main_log_message
         self.is_log_reraise = is_log_reraise
 
+    @staticmethod
     def get_owner_instance(
-        self, func: Callable, func_args: tuple
+        func: Callable, func_args: tuple
     ) -> Optional[object]:
 
         if func_args and hasattr(func_args[0], func.__name__):
-            if func.__qualname__.startswith(func_args[0].__class__.__name__):
+            class_name = func_args[0].__class__.__name__
+            method_name = f"{class_name}.{func.__name__}"
+            if func.__qualname__ == method_name:
                 return func_args[0]
 
-    def get_logger_from_args(
-        self, func: Callable, func_args: tuple
+    @staticmethod
+    def get_logger_from_instance(
+        instance: object, logger_attr_name: str
     ) -> Optional[Logger]:
 
-        if self.get_owner_instance(func, func_args) is not None:
-            logger = getattr(func_args[0], self.logger_attr_name, None)
-            if isinstance(logger, Logger):
-                return logger
+        logger = getattr(instance, logger_attr_name, None)
+        if isinstance(logger, Logger):
+            return logger
 
     def find_logger_func(self, func_info: FuncInfo) -> Logger:
         """ Searches for an instance of the logger in class attributes, in named
@@ -55,9 +59,15 @@ class LogDec:
 
             Returns the found logger.
         """
+        func_info.owner_instance = self.get_owner_instance(
+            func_info.func, func_info.args
+        )
+
         # A logger can be an "attribute" of a method class.
         # The name of the "attribute" in logger_attr_name.
-        logger = self.get_logger_from_args(func_info.func, func_info.args)
+        logger = self.get_logger_from_instance(
+            func_info.owner_instance, self.logger_attr_name
+        )
 
         # The logger can be passed to a function as a "named argument".
         # The name of the "named argument" in logger_kwarg_name.
@@ -68,7 +78,7 @@ class LogDec:
         # logger". The name of the "application logger" in app_name.
         return getLogger(self.app_name) if logger is None else logger
 
-    def log_func(self, func_info: FuncInfo, exc: Exception):
+    def log_exception(self, func_info: FuncInfo, exc: Exception):
 
         logger = self.find_logger_func(func_info)
 
@@ -81,7 +91,7 @@ class LogDec:
 
         msg = self.main_log_message
         if not func_info.exc_info:
-            msg = f"{self.main_log_message}{exc}"
+            msg = f"{msg} {exc}"
 
         logger.error(msg=msg, exc_info=func_info.exc_info, extra=extra)
 
@@ -89,8 +99,8 @@ class LogDec:
 
         if isinstance(exc, func_info.reraise):
             if self.is_log_reraise:
-                self.log_func(func_info, exc)
+                self.log_exception(func_info, exc)
             raise
-        self.log_func(func_info, exc)
+        self.log_exception(func_info, exc)
 
         return copy(func_info.return_value)
