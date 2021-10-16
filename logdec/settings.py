@@ -59,10 +59,6 @@ class LogDec:
 
             Returns the found logger.
         """
-        func_info.owner_instance = self.get_owner_instance(
-            func_info.func, func_info.args
-        )
-
         # A logger can be an "attribute" of a method class
         logger = self.get_logger_from_instance(
             func_info.owner_instance, self.logger_attr_name
@@ -75,6 +71,10 @@ class LogDec:
         return getLogger(self.app_name) if logger is None else logger
 
     def log_exception(self, func_info: FuncInfo, exc: Exception):
+
+        func_info.owner_instance = self.get_owner_instance(
+            func_info.func, func_info.args
+        )
 
         logger = self.find_logger_func(func_info)
 
