@@ -63,19 +63,15 @@ class LogDec:
             func_info.func, func_info.args
         )
 
-        # A logger can be an "attribute" of a method class.
-        # The name of the "attribute" in logger_attr_name.
+        # A logger can be an "attribute" of a method class
         logger = self.get_logger_from_instance(
             func_info.owner_instance, self.logger_attr_name
         )
 
-        # The logger can be passed to a function as a "named argument".
-        # The name of the "named argument" in logger_kwarg_name.
+        # The logger can be passed to a function as a "named argument"
         _logger = func_info.kwargs.get(self.logger_kwarg_name)
         logger = _logger if isinstance(_logger, Logger) else logger
 
-        # If the logger is not already defined, we will take "application
-        # logger". The name of the "application logger" in app_name.
         return getLogger(self.app_name) if logger is None else logger
 
     def log_exception(self, func_info: FuncInfo, exc: Exception):
