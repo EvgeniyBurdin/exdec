@@ -32,10 +32,19 @@ class LogDec:
         self.main_log_message = main_log_message
         self.is_log_reraise = is_log_reraise
 
-    def get_logger_from_args(self, func, func_args) -> Optional[Logger]:
+    def get_owner_instance(
+        self, func: Callable, func_args: tuple
+    ) -> Optional[object]:
 
-        if func_args and hasattr(func_args[0], func.__name__) \
-           and func.__qualname__.startswith(func_args[0].__class__.__name__):
+        if func_args and hasattr(func_args[0], func.__name__):
+            if func.__qualname__.startswith(func_args[0].__class__.__name__):
+                return func_args[0]
+
+    def get_logger_from_args(
+        self, func: Callable, func_args: tuple
+    ) -> Optional[Logger]:
+
+        if self.get_owner_instance(func, func_args) is not None:
             logger = getattr(func_args[0], self.logger_attr_name, None)
             if isinstance(logger, Logger):
                 return logger
