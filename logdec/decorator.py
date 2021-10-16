@@ -36,28 +36,26 @@ def logex(
                 "app_name": app_name,
             }
 
+            def handling_exception(exc) -> Any:
+                if isinstance(exc, reraise):
+                    if is_log_reraise:
+                        log_func(**log_kwargs, error=exc)
+                    raise
+                log_func(**log_kwargs, error=exc)
+                return copy(return_value)
+
             if asyncio.iscoroutinefunction(func):
                 async def async_func():
                     try:
                         return await func(*args, **kwargs)
-                    except reraise as error:
-                        if is_log_reraise:
-                            log_func(**log_kwargs, error=error)
-                        raise
-                    except Exception as error:
-                        log_func(**log_kwargs, error=error)
-                        return copy(return_value)
+                    except Exception as exc:
+                        return handling_exception(exc)
                 return async_func()
             else:
                 try:
                     return func(*args, **kwargs)
-                except reraise as error:
-                    if is_log_reraise:
-                        log_func(**log_kwargs, error=error)
-                    raise
-                except Exception as error:
-                    log_func(**log_kwargs, error=error)
-                    return copy(return_value)
+                except Exception as exc:
+                    return handling_exception(exc)
 
         return wrapper
 
