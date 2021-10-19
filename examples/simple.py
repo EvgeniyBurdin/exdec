@@ -11,7 +11,7 @@ class SomeException2(Exception):
     pass
 
 
-def biz(*args, **kwargs):
+async def biz(*args, **kwargs):
     return "biz"
 
 

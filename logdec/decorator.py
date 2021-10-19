@@ -1,8 +1,8 @@
 import asyncio
 import functools
-from typing import Tuple, Union, Optional, Callable, Type
+from typing import Callable, Optional, Tuple, Type, Union
 
-from .data_classes import FuncInfo, DecData
+from .data_classes import DecData, FuncInfo
 from .handlers import Handler
 
 handler = Handler()
@@ -10,7 +10,9 @@ handler = Handler()
 
 def logex(
     *names_or_func,
-    no_reraise: Union[Tuple[Type, ...], Type] = Exception,
+    no_reraise: Union[
+        Tuple[Type[Exception], ...], Type[Exception]
+    ] = Exception,
     callback: Optional[Callable] = None,
     handler: Handler = handler,
 ):

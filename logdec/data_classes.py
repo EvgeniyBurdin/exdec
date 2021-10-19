@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, Optional, Tuple, Union
+from typing import Callable, Optional, Tuple, Type, Union
 
 
 @dataclass
@@ -13,6 +13,6 @@ class FuncInfo:
 @dataclass
 class DecData:
     exception: Exception
-    no_reraise: Union[Tuple[Exception, ...], Exception]
+    no_reraise: Union[Tuple[Type[Exception], ...], Type[Exception]]
     callback: Optional[Callable]
     func_info: FuncInfo
