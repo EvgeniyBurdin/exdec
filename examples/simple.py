@@ -11,15 +11,19 @@ class SomeException2(Exception):
     pass
 
 
-@logex(reraise=SomeException1, return_value=[])
+def biz(*args, **kwargs):
+    return "biz"
+
+
+@logex(no_reraise=SomeException1, callback=biz)
 async def foo():
 
-    raise SomeException2("Exception message 1")
+    raise SomeException1("Exception message 1")
 
 
 class SomeClass:
 
-    @logex(return_value=333)
+    @logex
     async def bar(self, i):
 
         raise SomeException2("Exception message 2")

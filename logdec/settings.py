@@ -1,21 +1,11 @@
 from copy import copy
-from dataclasses import dataclass
 from logging import Logger, getLogger
-from typing import Any, Callable, Optional, Tuple, Union
+from typing import Any, Callable, Optional
 
 from .defaults import (APP_NAME, LOGGER_ATTR_NAME, LOGGER_KWARG_NAME,
                        MAIN_LOG_MESSAGE)
 
-
-@dataclass
-class FuncInfo:
-    func: Callable
-    args: tuple
-    kwargs: dict
-    reraise: Union[Tuple[Exception, ...], Exception]
-    return_value: Any
-    exc_info: bool
-    owner_instance: Optional[object] = None
+from .data_classes import FuncInfo
 
 
 class LogDec:
@@ -26,12 +16,14 @@ class LogDec:
         app_name: str = APP_NAME,
         main_log_message: str = MAIN_LOG_MESSAGE,
         is_log_reraise: bool = False,
+        logger_class=Logger
     ):
         self.logger_attr_name = logger_attr_name
         self.logger_kwarg_name = logger_kwarg_name
         self.app_name = app_name
         self.main_log_message = main_log_message
         self.is_log_reraise = is_log_reraise
+        self.logger_class = logger_class
 
     @staticmethod
     def get_owner_instance(
@@ -46,11 +38,11 @@ class LogDec:
 
     @staticmethod
     def get_logger_from_instance(
-        instance: object, logger_attr_name: str
+        instance: object, logger_attr_name: str, logger_class
     ) -> Optional[Logger]:
 
         logger = getattr(instance, logger_attr_name, None)
-        if isinstance(logger, Logger):
+        if isinstance(logger, logger_class):
             return logger
 
     def find_logger_func(self, func_info: FuncInfo) -> Logger:
@@ -61,12 +53,12 @@ class LogDec:
         """
         # A logger can be an "attribute" of a method class
         logger = self.get_logger_from_instance(
-            func_info.owner_instance, self.logger_attr_name
+            func_info.owner_instance, self.logger_attr_name, self.logger_class
         )
 
         # The logger can be passed to a function as a "named argument"
         _logger = func_info.kwargs.get(self.logger_kwarg_name)
-        logger = _logger if isinstance(_logger, Logger) else logger
+        logger = _logger if isinstance(_logger, self.logger_class) else logger
 
         return getLogger(self.app_name) if logger is None else logger
 
