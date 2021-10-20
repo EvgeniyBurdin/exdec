@@ -1,32 +1,34 @@
 import asyncio
 
 from exdec.decorator import catch
+from exdec.data_classes import FuncInfo
 
 
-class SomeException1(Exception):
+class SomeException_1(Exception):
     pass
 
 
-class SomeException2(Exception):
+class SomeException_2(Exception):
     pass
 
 
-async def biz(*args, **kwargs):
-    return "bizzzzz"
+async def some_handler(func_info: FuncInfo):
+
+    return func_info
 
 
-@catch(exceptions=(SomeException1, SomeException2), handler=biz)
+@catch(exceptions=(SomeException_1, SomeException_2), handler=some_handler)
 async def foo():
 
-    raise SomeException1("Exception message 1")
+    raise SomeException_1("Exception message 1")
 
 
 class SomeClass:
 
-    @catch(exceptions=SomeException1)
+    @catch(exceptions=SomeException_1)
     async def bar(self, i):
 
-        raise SomeException2("Exception message 2")
+        raise SomeException_2("Exception message 2")
 
 
 if __name__ == "__main__":

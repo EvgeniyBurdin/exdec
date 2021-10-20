@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from typing import Any, Callable, Optional, Tuple, Type, Union
+from typing import Any, Callable, Optional, Tuple, Type, Union, Dict
 
 
 @dataclass
 class FuncInfo:
     func: Callable
-    args: tuple
-    kwargs: dict
+    args: Tuple[Any, ...]
+    kwargs: Dict[str, Any]
     exception: Exception
     owner_instance: Optional[object] = None
 
