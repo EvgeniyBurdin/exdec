@@ -1,9 +1,9 @@
 import asyncio
 import functools
-from typing import Callable, Optional, Tuple, Type, Union
+from typing import Any, Callable, Optional, Tuple, Type, Union
 
-from .data_classes import DecData, FuncInfo
 from .catcher import Catcher
+from .data_classes import DecData, FuncInfo
 
 catcher = Catcher()
 
@@ -14,7 +14,7 @@ def catch(
         Tuple[Type[Exception], ...], Type[Exception]
     ] = Exception,
     exclude: bool = False,
-    handler: Optional[Callable] = None,
+    handler: Optional[Callable[[FuncInfo], Any]] = None,
     catcher: Catcher = catcher,
 ):
     def _decor(func):
