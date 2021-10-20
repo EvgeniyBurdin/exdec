@@ -15,11 +15,8 @@ def handle_wrapper(handle_exception_method):
     def handle_exception(self, dec_data: DecData):
 
         self.try_reraise(dec_data)
-
         dec_data.handler = self.select_handler(dec_data)
-
         dec_data.func_info.owner = self.get_func_owner(dec_data)
-        print("###", dec_data.func_info.owner)
 
         if asyncio.iscoroutinefunction(handle_exception_method):
             async def async_func():
