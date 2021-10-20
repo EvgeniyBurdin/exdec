@@ -30,15 +30,14 @@ class Catcher:
     @staticmethod
     def try_reraise(dec_data: DecData):
 
-        exception = dec_data.func_info.exception
-        exceptions = dec_data.exceptions
-        exclude = dec_data.exclude
+        func_exception = dec_data.func_info.exception
+        exception_classes = dec_data.exceptions
 
-        if exclude:
-            if isinstance(exception, exceptions):
+        if dec_data.exclude:
+            if isinstance(func_exception, exception_classes):
                 raise
         else:
-            if not isinstance(exception, exceptions):
+            if not isinstance(func_exception, exception_classes):
                 raise
 
     def select_handler(self, dec_data: DecData) -> Callable:
