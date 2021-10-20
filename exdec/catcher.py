@@ -1,8 +1,12 @@
 import asyncio
 import functools
-from typing import Any, Callable, Optional, Tuple
+from typing import Any, Callable, Optional, Tuple, Type, Union
 
 from .data_classes import DecData, FuncInfo
+
+
+class ExDecCatcherException(Exception):
+    pass
 
 
 def handle_wrapper(handle_exception_method):
@@ -32,6 +36,33 @@ def handle_wrapper(handle_exception_method):
 
 
 class Catcher:
+
+    def __init__(
+        self,
+        default_exception_classes: Union[
+            Tuple[Type[Exception], ...], Type[Exception]
+        ] = Exception,
+    ):
+        if not isinstance(default_exception_classes, tuple):
+            if not isinstance(default_exception_classes, list):
+                default_exception_classes = [default_exception_classes, ]
+            default_exception_classes = tuple(default_exception_classes)
+        self.default_exception_classes = default_exception_classes
+
+    def make_exceptions(self, dec_args: tuple) -> Tuple[Type[Exception], ...]:
+
+        exceptions = dec_args
+        if not dec_args or (not type(dec_args[0]) is type
+           and len(dec_args) == 1 and callable(dec_args[0])):
+            exceptions = self.default_exception_classes
+
+        for exc in exceptions:
+            if not type(exc) is type or not issubclass(exc, Exception):
+                msg = "The positional arguments of the 'cath' decorator must "
+                msg += "be subclasses of Exception. But received: "
+                msg += f"{exc}, type={type(exc)}."
+                raise ExDecCatcherException(msg)
+        return exceptions
 
     def default_handler(self, func_info: FuncInfo):
         print("--- tmp:", type(func_info.exception), func_info.exception)
