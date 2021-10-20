@@ -1,5 +1,6 @@
 import asyncio
 import functools
+import inspect
 from typing import Any, Callable, Optional, Tuple, Type, Union
 
 from .data_classes import DecData, FuncInfo
@@ -17,13 +18,8 @@ def handle_wrapper(handle_exception_method):
 
         dec_data.handler = self.select_handler(dec_data)
 
-        owner, owner_kind = self.get_func_owner(dec_data)
-        if owner is not None:
-            if owner_kind == "self":
-                dec_data.func_info.self = owner
-            if owner_kind == "cls":
-                dec_data.func_info.cls = owner
-            dec_data.func_info.args = dec_data.func_info.args[1:]
+        dec_data.func_info.owner = self.get_func_owner(dec_data)
+        print("###", dec_data.func_info.owner)
 
         if asyncio.iscoroutinefunction(handle_exception_method):
             async def async_func():
@@ -81,22 +77,21 @@ class Catcher:
                 raise
 
     @staticmethod
-    def get_func_owner(dec_data: DecData) -> Tuple[Any, Optional[str]]:
+    def get_func_owner(dec_data: DecData) -> Optional[str]:
 
-        func = dec_data.func_info.func
-        func_args = dec_data.func_info.args
+        func_info = dec_data.func_info
+        signature = inspect.signature(func_info.func)
+        bound = signature.bind(*func_info.args, **func_info.kwargs)
 
-        if func_args and hasattr(func_args[0], func.__name__):
+        owner = bound.arguments.get("self")
+        if owner:
+            return "self"
 
-            class_name = func_args[0].__class__.__name__
-            if func.__qualname__ == f"{class_name}.{func.__name__}":
-                return func_args[0], "self"
+        owner = bound.arguments.get("cls")
+        if owner:
+            return "cls"
 
-            class_name = func_args[0].__name__
-            if func.__qualname__ == f"{class_name}.{func.__name__}":
-                return func_args[0], "cls"
-
-        return None, None
+        return None
 
     def select_handler(self, dec_data: DecData) -> Callable:
 
