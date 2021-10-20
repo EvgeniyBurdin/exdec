@@ -12,10 +12,6 @@ class ExDecCatchException(Exception):
     pass
 
 
-EX_MSG = "The positional arguments of the 'cath' decorator must be subclasses "
-EX_MSG += "of Exception. But received:"
-
-
 def catch(
     *exceptions_or_func,
     exclude: bool = False,
