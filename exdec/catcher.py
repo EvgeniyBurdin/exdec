@@ -1,6 +1,6 @@
 import asyncio
 import functools
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Tuple
 
 from .data_classes import DecData, FuncInfo
 
@@ -13,9 +13,12 @@ def handle_wrapper(handle_exception_method):
 
         dec_data.handler = self.select_handler(dec_data)
 
-        func_self = self.get_func_self(dec_data)
-        if func_self is not None:
-            dec_data.func_info.self = func_self
+        owner, flag = self.get_func_owner(dec_data)
+        if owner is not None:
+            if flag == "self":
+                dec_data.func_info.self = owner
+            if flag == "cls":
+                dec_data.func_info.cls = owner
             dec_data.func_info.args = dec_data.func_info.args[1:]
 
         if asyncio.iscoroutinefunction(handle_exception_method):
@@ -47,16 +50,20 @@ class Catcher:
                 raise
 
     @staticmethod
-    def get_func_self(dec_data: DecData) -> Optional[object]:
+    def get_func_owner(dec_data: DecData) -> Tuple[Any, Optional[str]]:
 
         func = dec_data.func_info.func
         func_args = dec_data.func_info.args
 
-        # TODO: add parse class method
         if func_args and hasattr(func_args[0], func.__name__):
             class_name = func_args[0].__class__.__name__
             if func.__qualname__ == f"{class_name}.{func.__name__}":
-                return func_args[0]
+                return func_args[0], "self"
+            class_name = func_args[0].__name__
+            if func.__qualname__ == f"{class_name}.{func.__name__}":
+                return func_args[0], "cls"
+
+        return None, None
 
     def select_handler(self, dec_data: DecData) -> Callable:
 

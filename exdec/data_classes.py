@@ -9,6 +9,7 @@ class FuncInfo:
     kwargs: Dict[str, Any]
     exception: Exception
     self: Optional[object] = None
+    cls: Optional[type] = None
 
 
 @dataclass
