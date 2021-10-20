@@ -21,11 +21,12 @@ def catch(
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
-            def make_dec_data(catched: Exception) -> DecData:
+            def make_dec_data(exception: Exception) -> DecData:
                 return DecData(
                     exceptions=exceptions, exclude=exclude, handler=handler,
                     func_info=FuncInfo(
-                        func=func, args=args, kwargs=kwargs, exception=catched,
+                        func=func, args=args, kwargs=kwargs,
+                        exception=exception,
                     ),
                 )
 
