@@ -1,7 +1,7 @@
 import asyncio
 
-from exdec.decorator import catch
 from exdec.data_classes import FuncInfo
+from exdec.decorator import catch
 
 
 class SomeException_1(Exception):
