@@ -17,11 +17,11 @@ def handle_wrapper(handle_exception_method):
 
         dec_data.handler = self.select_handler(dec_data)
 
-        owner, flag = self.get_func_owner(dec_data)
+        owner, owner_kind = self.get_func_owner(dec_data)
         if owner is not None:
-            if flag == "self":
+            if owner_kind == "self":
                 dec_data.func_info.self = owner
-            if flag == "cls":
+            if owner_kind == "cls":
                 dec_data.func_info.cls = owner
             dec_data.func_info.args = dec_data.func_info.args[1:]
 
@@ -64,7 +64,8 @@ class Catcher:
         return exceptions
 
     def default_handler(self, func_info: FuncInfo):
-        print("--- tmp:", type(func_info.exception), func_info.exception)
+
+        print("log:", type(func_info.exception), func_info.exception)
 
     @staticmethod
     def try_reraise(dec_data: DecData):
@@ -86,9 +87,11 @@ class Catcher:
         func_args = dec_data.func_info.args
 
         if func_args and hasattr(func_args[0], func.__name__):
+
             class_name = func_args[0].__class__.__name__
             if func.__qualname__ == f"{class_name}.{func.__name__}":
                 return func_args[0], "self"
+
             class_name = func_args[0].__name__
             if func.__qualname__ == f"{class_name}.{func.__name__}":
                 return func_args[0], "cls"
