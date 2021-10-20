@@ -44,9 +44,8 @@ class Catcher:
         ] = Exception,
     ):
         if not isinstance(default_exception_classes, tuple):
-            if not isinstance(default_exception_classes, list):
-                default_exception_classes = [default_exception_classes, ]
-            default_exception_classes = tuple(default_exception_classes)
+            default_exception_classes = tuple([default_exception_classes, ])
+
         self.default_exception_classes = default_exception_classes
 
     def make_exceptions(self, dec_args: tuple) -> Tuple[Type[Exception], ...]:
