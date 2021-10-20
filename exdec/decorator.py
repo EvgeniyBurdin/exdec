@@ -8,26 +8,13 @@ from .data_classes import DecData, FuncInfo
 catcher = Catcher()
 
 
-class ExDecCatchException(Exception):
-    pass
-
-
 def catch(
-    *exceptions_or_func,
+    *dec_args,
     exclude: bool = False,
     handler: Optional[Callable[[FuncInfo], Any]] = None,
     catcher: Catcher = catcher,
 ):
-    exceptions = exceptions_or_func
-    if not exceptions or not type(exceptions[0]) is type:
-        exceptions = (Exception, )
-
-    for exc in exceptions:
-        if not type(exc) is type or not issubclass(exc, Exception):
-            msg = "The positional arguments of the 'cath' decorator must be "
-            msg += "subclasses of Exception. But received: "
-            msg += f"{msg}{exc}, type={type(exc)}."
-            raise ExDecCatchException(msg)
+    exceptions = catcher.make_exceptions(dec_args)
 
     def _decor(func):
         @functools.wraps(func)
@@ -59,8 +46,7 @@ def catch(
 
         return wrapper
 
-    if exceptions_or_func and callable(exceptions_or_func[0]) \
-       and not type(exceptions_or_func[0]) is type:
-        return _decor(exceptions_or_func[0])
+    if dec_args and callable(dec_args[0]) and not type(dec_args[0]) is type:
+        return _decor(dec_args[0])
     else:
         return _decor
