@@ -25,18 +25,24 @@ async def foo():
 
 class SomeClass:
 
-    @classmethod
     @catch(exceptions=SomeException_1, exclude=True, handler=some_handler)
-    async def bar(cls, i):
+    async def bar(self, i):
 
         raise SomeException_2("Exception message 2")
 
 
-if __name__ == "__main__":
+async def main():
 
     print("="*10)
-    print("> foo return:", asyncio.run(foo()))
+    result = await foo()
+    print("> foo return:", result)
 
     print("="*10)
     some = SomeClass()
-    print("> some.bar return:", asyncio.run(some.bar(1)))
+    result = await some.bar(1)
+    print("> some.bar return:", result)
+
+
+if __name__ == "__main__":
+
+    asyncio.run(main())
