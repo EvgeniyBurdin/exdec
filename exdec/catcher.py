@@ -7,7 +7,7 @@ from .data_classes import DecData, FuncInfo
 
 def reraise_or_select_handler(handle_exception_method):
     @functools.wraps(handle_exception_method)
-    def handle_exception(self, dec_data: DecData, handler=None):
+    def handle_exception(self, dec_data: DecData):
 
         self.try_reraise(dec_data)
         dec_data.handler = self.select_handler(dec_data)
