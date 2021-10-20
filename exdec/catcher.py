@@ -10,9 +10,9 @@ class ExDecCatcherException(Exception):
     pass
 
 
-def handle_wrapper(handle_exception_method):
+def handle_wrapper(handle_exception_method: Callable[[DecData], Any]):
     @functools.wraps(handle_exception_method)
-    def handle_exception(self, dec_data: DecData):
+    def handle_exception(self, dec_data: DecData) -> Any:
 
         self.try_reraise(dec_data)
         dec_data.handler = self.select_handler(dec_data)
@@ -54,6 +54,7 @@ class Catcher:
                 msg += "be subclasses of Exception. But received: "
                 msg += f"{exc}, type={type(exc)}."
                 raise ExDecCatcherException(msg)
+
         return exceptions
 
     def default_handler(self, func_info: FuncInfo):
@@ -87,8 +88,6 @@ class Catcher:
         owner = bound.arguments.get("cls")
         if owner:
             return "cls"
-
-        return None
 
     def select_handler(self, dec_data: DecData) -> Callable:
 
