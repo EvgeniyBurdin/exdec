@@ -1,6 +1,6 @@
 import asyncio
 
-from logdec.decorator import logex
+from exdec.decorator import catch
 
 
 class SomeException1(Exception):
@@ -12,10 +12,10 @@ class SomeException2(Exception):
 
 
 async def biz(*args, **kwargs):
-    return "biz"
+    return "bizzzzz"
 
 
-@logex(no_reraise=SomeException1, callback=biz)
+@catch(exceptions=(SomeException1, SomeException2), handler=biz)
 async def foo():
 
     raise SomeException1("Exception message 1")
@@ -23,7 +23,7 @@ async def foo():
 
 class SomeClass:
 
-    @logex
+    @catch(exceptions=SomeException1)
     async def bar(self, i):
 
         raise SomeException2("Exception message 2")

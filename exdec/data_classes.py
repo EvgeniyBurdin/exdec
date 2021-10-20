@@ -7,12 +7,13 @@ class FuncInfo:
     func: Callable
     args: tuple
     kwargs: dict
+    exception: Exception
     owner_instance: Optional[object] = None
 
 
 @dataclass
 class DecData:
-    exception: Exception
-    no_reraise: Union[Tuple[Type[Exception], ...], Type[Exception]]
-    callback: Optional[Callable]
+    exceptions: Union[Tuple[Type[Exception], ...], Type[Exception]]
+    exclude: bool
+    handler: Optional[Callable]
     func_info: FuncInfo

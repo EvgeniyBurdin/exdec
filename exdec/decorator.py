@@ -3,30 +3,30 @@ import functools
 from typing import Callable, Optional, Tuple, Type, Union
 
 from .data_classes import DecData, FuncInfo
-from .handlers import Handler
+from .catcher import Catcher
 
-handler = Handler()
+catcher = Catcher()
 
 
-def logex(
+def catch(
     *names_or_func,
-    no_reraise: Union[
+    exceptions: Union[
         Tuple[Type[Exception], ...], Type[Exception]
     ] = Exception,
-    callback: Optional[Callable] = None,
-    handler: Handler = handler,
+    exclude: bool = False,
+    handler: Optional[Callable] = None,
+    catcher: Catcher = catcher,
 ):
     def _decor(func):
-
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
-            def make_dec_data(exception: Exception) -> DecData:
+            def make_dec_data(catched: Exception) -> DecData:
                 return DecData(
-                    exception=exception,
-                    no_reraise=no_reraise,
-                    callback=callback,
-                    func_info=FuncInfo(func=func, args=args, kwargs=kwargs),
+                    exceptions=exceptions, exclude=exclude, handler=handler,
+                    func_info=FuncInfo(
+                        func=func, args=args, kwargs=kwargs, exception=catched,
+                    ),
                 )
 
             if asyncio.iscoroutinefunction(func):
@@ -34,7 +34,7 @@ def logex(
                     try:
                         return await func(*args, **kwargs)
                     except Exception as exception:
-                        return await handler.aio_exception(
+                        return await catcher.aio_handle_exception(
                             make_dec_data(exception)
                         )
                 return async_func()
@@ -42,7 +42,7 @@ def logex(
                 try:
                     return func(*args, **kwargs)
                 except Exception as exception:
-                    return handler.exception(make_dec_data(exception))
+                    return catcher.handle_exception(make_dec_data(exception))
 
         return wrapper
 
