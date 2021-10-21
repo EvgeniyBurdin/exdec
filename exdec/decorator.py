@@ -17,6 +17,7 @@ def catch(
     manager: Manager = manager,
 ):
     exceptions = manager.make_exceptions(dec_args)
+
     before_handler, after_handler, exc_handler = manager.make_handlers(
         before_handler, after_handler, exc_handler
     )
@@ -26,8 +27,7 @@ def catch(
         def wrapper(*args, **kwargs):
 
             dec_data = DecData(
-                exceptions=exceptions,
-                exclude=exclude,
+                exceptions=exceptions, exclude=exclude,
                 func_info=FuncInfo(func=func, args=args, kwargs=kwargs),
             )
 
