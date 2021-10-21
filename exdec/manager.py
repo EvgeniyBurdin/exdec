@@ -50,8 +50,8 @@ class Manager:
 
     def make_handlers(
         self,
-        before_handler: Optional[Callable[[FuncInfo], Any]],
-        after_handler: Optional[Callable[[FuncInfo], Any]],
+        before_handler: Optional[Callable[[FuncInfo], None]],
+        after_handler: Optional[Callable[[FuncInfo], None]],
         exc_handler: Optional[Callable[[FuncInfo], Any]],
     ) -> Tuple[Callable[[FuncInfo], Any]]:
 
