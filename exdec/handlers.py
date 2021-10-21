@@ -11,14 +11,14 @@ class Handler:
     @classmethod
     def before(cls, func_info: FuncInfo):
 
-        cls.logger.debug(f"before: {func_info}")
+        cls.logger.debug(f"before_handler: {func_info}")
 
     @classmethod
     def after(cls, func_info: FuncInfo):
 
-        cls.logger.debug(f"after: {func_info}")
+        cls.logger.debug(f"after_handler: {func_info}")
 
     @classmethod
     def exc(cls, func_info: FuncInfo):
 
-        cls.logger.error(f"exc: {func_info}")
+        cls.logger.error(f"exc_handler: {func_info}")
