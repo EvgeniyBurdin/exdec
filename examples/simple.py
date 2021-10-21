@@ -25,7 +25,7 @@ async def foo():
 
 class SomeClass:
 
-    @catch(SomeException_2, exc_handler=some_handler)
+    @catch(SomeException_2)
     async def bar(self, i):
 
         raise SomeException_2("Exception message 2")

@@ -1,16 +1,24 @@
+from logging import Logger
+
 from .data_classes import FuncInfo
+from .logger import logger as default_logger
 
 
-def before_handler(func_info: FuncInfo):
+class Handler:
 
-    print("log before:", func_info)
+    logger: Logger = default_logger
 
+    @classmethod
+    def before(cls, func_info: FuncInfo):
 
-def after_handler(func_info: FuncInfo):
+        cls.logger.debug(f"before: {func_info}")
 
-    print("log after:", func_info)
+    @classmethod
+    def after(cls, func_info: FuncInfo):
 
+        cls.logger.debug(f"after: {func_info}")
 
-def exc_handler(func_info: FuncInfo):
+    @classmethod
+    def exc(cls, func_info: FuncInfo):
 
-    print("log exc:", func_info)
+        cls.logger.error(f"exc: {func_info}")

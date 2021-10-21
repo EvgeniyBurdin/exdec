@@ -3,7 +3,7 @@ import functools
 from typing import Any, Callable, Optional, Tuple, Type
 
 from .data_classes import DecData, FuncInfo
-from .handlers import after_handler, before_handler, exc_handler
+from .handlers import Handler
 from .utils import check_exception, check_handler, try_reraise
 
 
@@ -29,9 +29,9 @@ class Manager:
     def __init__(
         self,
         default_exception_classes: Tuple[Type[Exception], ...] = (Exception, ),
-        before_handler: Callable[[FuncInfo], Any] = before_handler,
-        after_handler: Callable[[FuncInfo], Any] = after_handler,
-        exc_handler: Callable[[FuncInfo], Any] = exc_handler,
+        before_handler: Callable[[FuncInfo], Any] = Handler.before,
+        after_handler: Callable[[FuncInfo], Any] = Handler.after,
+        exc_handler: Callable[[FuncInfo], Any] = Handler.exc,
         try_reraise: Callable[[DecData], None] = try_reraise,
         check_handler: Callable[
             [Callable[[FuncInfo], Any]], None
