@@ -59,14 +59,14 @@ class Manager:
         exc_handler: Optional[Callable[[FuncInfo], Any]],
     ) -> Tuple[Callable[[FuncInfo], Any]]:
 
-        before_handler = self.before_handler \
-            if before_handler is None else before_handler
+        if before_handler is None:
+            before_handler = self.before_handler
 
-        after_handler = self.after_handler \
-            if after_handler is None else after_handler
+        if after_handler is None:
+            after_handler = self.after_handler
 
-        exc_handler = self.exc_handler \
-            if exc_handler is None else exc_handler
+        if exc_handler is None:
+            exc_handler = self.exc_handler
 
         for handler in (before_handler, after_handler, exc_handler):
             self.check_handler(handler)
