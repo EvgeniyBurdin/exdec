@@ -8,7 +8,6 @@ class FuncInfo:
     args: Tuple[Any, ...]
     kwargs: Dict[str, Any]
     exception: Exception
-    owner: Optional[str] = None
 
 
 @dataclass

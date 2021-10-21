@@ -1,7 +1,7 @@
 import asyncio
 import functools
 import inspect
-from typing import Any, Callable, Optional, Tuple, Type, Union
+from typing import Any, Callable, Tuple, Type, Union
 
 from .data_classes import DecData, FuncInfo
 
@@ -16,7 +16,6 @@ def handle_wrapper(handle_exception_method: Callable[[DecData], Any]):
 
         self.try_reraise(dec_data)
         dec_data.handler = self.select_handler(dec_data)
-        dec_data.func_info.owner = self.get_func_owner(dec_data)
 
         if asyncio.iscoroutinefunction(handle_exception_method):
             async def async_func():
@@ -75,19 +74,15 @@ class Catcher:
                 raise
 
     @staticmethod
-    def get_func_owner(dec_data: DecData) -> Optional[str]:
+    def is_bound_function(dec_data: DecData) -> bool:
 
         func_info = dec_data.func_info
         signature = inspect.signature(func_info.func)
         bound = signature.bind(*func_info.args, **func_info.kwargs)
+        arguments = bound.arguments
+        owner = arguments.get("self") or arguments.get("cls")
 
-        owner = bound.arguments.get("self")
-        if owner:
-            return "self"
-
-        owner = bound.arguments.get("cls")
-        if owner:
-            return "cls"
+        return bool(owner)
 
     def select_handler(self, dec_data: DecData) -> Callable:
 
