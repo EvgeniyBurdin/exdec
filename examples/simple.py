@@ -17,16 +17,16 @@ async def some_handler(func_info: FuncInfo):
     return func_info
 
 
-@catch(SomeException_1, SomeException_2, handler=some_handler)
+@catch(SomeException_1, SomeException_2)
 async def foo():
 
-    raise SomeException_1("Exception message 1")
+    return "foofoofoo"
 
 
 class SomeClass:
 
     @classmethod
-    @catch(handler=some_handler)
+    @catch
     async def bar(cls, i):
 
         raise SomeException_2("Exception message 2")

@@ -28,27 +28,36 @@ def catch(
             dec_data = DecData(
                 exceptions=exceptions,
                 exclude=exclude,
-                before_handler=before_handler,
-                after_handler=after_handler,
-                exc_handler=exc_handler,
                 func_info=FuncInfo(func=func, args=args, kwargs=kwargs),
             )
 
             if asyncio.iscoroutinefunction(func):
                 async def async_func():
                     try:
+                        await manager.aio_execute_handler(
+                            before_handler, dec_data
+                        )
                         result = await func(*args, **kwargs)
+                        await manager.aio_execute_handler(
+                            after_handler, dec_data
+                        )
                     except Exception as exception:
                         dec_data.func_info.exception = exception
-                        result = await manager.aio_handle_exception(dec_data)
+                        result = await manager.aio_execute_handler(
+                            exc_handler, dec_data
+                        )
                     return result
                 wrapper_result = async_func()
             else:
                 try:
+                    manager.execute_handler(before_handler, dec_data)
                     wrapper_result = func(*args, **kwargs)
+                    manager.execute_handler(after_handler, dec_data)
                 except Exception as exception:
                     dec_data.func_info.exception = exception
-                    wrapper_result = manager.handle_exception(dec_data)
+                    wrapper_result = manager.execute_handler(
+                        exc_handler, dec_data
+                    )
 
             return wrapper_result
 

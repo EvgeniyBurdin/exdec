@@ -10,21 +10,21 @@ class ExDecManagerException(Exception):
     pass
 
 
-def handle_wrapper(handle_exception_method: Callable[[DecData], Any]):
-    @functools.wraps(handle_exception_method)
-    def handle_exception(self, dec_data: DecData) -> Any:
+def execute_wrapper(method):
+    @functools.wraps(method)
+    def execute(self, handler: Callable, dec_data: DecData) -> Any:
 
-        self.try_reraise(dec_data)
-        dec_data.handler = self.select_handler(dec_data)
+        if dec_data.func_info.exception is not None:
+            self.try_reraise(dec_data)
 
-        if asyncio.iscoroutinefunction(handle_exception_method):
+        if asyncio.iscoroutinefunction(method):
             async def async_func():
-                return await handle_exception_method(self, dec_data)
+                return await method(self, handler, dec_data)
             return async_func()
         else:
-            return handle_exception_method(self, dec_data)
+            return method(self, handler, dec_data)
 
-    return handle_exception
+    return execute
 
 
 class Manager:
@@ -128,31 +128,14 @@ class Manager:
             if not isinstance(func_exception, exception_classes):
                 raise
 
-    @staticmethod
-    def is_bound_function(dec_data: DecData) -> bool:
+    @execute_wrapper
+    def execute_handler(self, handler: Callable, dec_data: DecData):
+        return handler(dec_data.func_info)
 
-        func_info = dec_data.func_info
-        signature = inspect.signature(func_info.func)
-        bound = signature.bind(*func_info.args, **func_info.kwargs)
-        arguments = bound.arguments
-        owner = arguments.get("self") or arguments.get("cls")
+    @execute_wrapper
+    async def aio_execute_handler(self, handler: Callable, dec_data: DecData):
 
-        return bool(owner)
-
-    def select_handler(self, dec_data: DecData) -> Callable:
-
-        return self.default_exc_handler if dec_data.handler is None \
-               else dec_data.handler
-
-    @handle_wrapper
-    def handle_exception(self, dec_data: DecData) -> Any:
-
-        return dec_data.handler(dec_data.func_info)
-
-    @handle_wrapper
-    async def aio_handle_exception(self, dec_data: DecData) -> Any:
-
-        if asyncio.iscoroutinefunction(dec_data.handler):
-            return await dec_data.handler(dec_data.func_info)
+        if asyncio.iscoroutinefunction(handler):
+            return await handler(dec_data.func_info)
         else:
-            return dec_data.handler(dec_data.func_info)
+            return handler(dec_data.func_info)
