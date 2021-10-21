@@ -1,12 +1,12 @@
 import asyncio
 import functools
 import inspect
-from typing import Any, Callable, Tuple, Type, Union
+from typing import Any, Callable, Optional, Tuple, Type
 
 from .data_classes import DecData, FuncInfo
 
 
-class ExDecCatcherException(Exception):
+class ExDecManagerException(Exception):
     pass
 
 
@@ -27,18 +27,23 @@ def handle_wrapper(handle_exception_method: Callable[[DecData], Any]):
     return handle_exception
 
 
-class Catcher:
+class Manager:
 
     def __init__(
         self,
-        default_exception_classes: Union[
-            Tuple[Type[Exception], ...], Type[Exception]
-        ] = Exception,
+        default_exception_classes: Tuple[Type[Exception], ...] = (Exception, ),
+        before_handler: Optional[Callable[[FuncInfo], Any]] = None,
+        after_handler: Optional[Callable[[FuncInfo], Any]] = None,
+        exc_handler: Optional[Callable[[FuncInfo], Any]] = None,
     ):
-        if not isinstance(default_exception_classes, tuple):
-            default_exception_classes = tuple([default_exception_classes, ])
-
         self.default_exception_classes = default_exception_classes
+
+        if before_handler is None:
+            self.before_handler = self.default_before_handler
+        if after_handler is None:
+            self.after_handler = self.default_after_handler
+        if exc_handler is None:
+            self.exc_handler = self.default_exc_handlerr
 
     def make_exceptions(self, dec_args: tuple) -> Tuple[Type[Exception], ...]:
 
@@ -52,13 +57,21 @@ class Catcher:
                 msg = "The positional arguments of the 'cath' decorator must "
                 msg += "be subclasses of Exception. But received: "
                 msg += f"{exc}, type={type(exc)}."
-                raise ExDecCatcherException(msg)
+                raise ExDecManagerException(msg)
 
         return exceptions
 
-    def default_handler(self, func_info: FuncInfo):
+    def default_before_handler(self, func_info: FuncInfo):
 
-        print("log:", type(func_info.exception), func_info.exception)
+        print("log before:", func_info.func.__qualname__)
+
+    def default_after_handler(self, func_info: FuncInfo):
+
+        print("log after:", func_info.func.__qualname__)
+
+    def default_exc_handler(self, func_info: FuncInfo):
+
+        print("log exc:", type(func_info.exception), func_info.exception)
 
     @staticmethod
     def try_reraise(dec_data: DecData):
@@ -86,7 +99,7 @@ class Catcher:
 
     def select_handler(self, dec_data: DecData) -> Callable:
 
-        return self.default_handler if dec_data.handler is None \
+        return self.default_exc_handler if dec_data.handler is None \
                else dec_data.handler
 
     @handle_wrapper

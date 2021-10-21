@@ -2,10 +2,10 @@ import asyncio
 import functools
 from typing import Any, Callable, Optional
 
-from .catcher import Catcher
 from .data_classes import DecData, FuncInfo
+from .manager import Manager
 
-catcher = Catcher()
+manager = Manager()
 
 
 def catch(
@@ -14,9 +14,12 @@ def catch(
     before_handler: Optional[Callable[[FuncInfo], Any]] = None,
     after_handler: Optional[Callable[[FuncInfo], Any]] = None,
     exc_handler: Optional[Callable[[FuncInfo], Any]] = None,
-    catcher: Catcher = catcher,
+    manager: Manager = manager,
 ):
-    exceptions = catcher.make_exceptions(dec_args)
+    exceptions = manager.make_exceptions(dec_args)
+    before_handler, after_handler, exc_handler = manager.make_handlers(
+        before_handler, after_handler, exc_handler
+    )
 
     def decor(func):
         @functools.wraps(func)
@@ -37,7 +40,7 @@ def catch(
                         result = await func(*args, **kwargs)
                     except Exception as exception:
                         dec_data.func_info.exception = exception
-                        result = await catcher.aio_handle_exception(dec_data)
+                        result = await manager.aio_handle_exception(dec_data)
                     return result
                 wrapper_result = async_func()
             else:
@@ -45,7 +48,7 @@ def catch(
                     wrapper_result = func(*args, **kwargs)
                 except Exception as exception:
                     dec_data.func_info.exception = exception
-                    wrapper_result = catcher.handle_exception(dec_data)
+                    wrapper_result = manager.handle_exception(dec_data)
 
             return wrapper_result
 

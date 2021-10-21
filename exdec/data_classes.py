@@ -14,7 +14,7 @@ class FuncInfo:
 class DecData:
     exceptions: Union[Tuple[Type[Exception], ...], Type[Exception]]
     exclude: bool
-    before_handler: Optional[Callable[[FuncInfo], Any]]
-    after_handler: Optional[Callable[[FuncInfo], Any]]
-    exc_handler: Optional[Callable[[FuncInfo], Any]]
+    before_handler: Callable[[FuncInfo], Any]
+    after_handler: Callable[[FuncInfo], Any]
+    exc_handler: Callable[[FuncInfo], Any]
     func_info: FuncInfo
