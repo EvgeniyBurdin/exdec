@@ -8,6 +8,40 @@ from .manager import Manager
 manager = Manager()
 
 
+async def _async_wrapper(
+    func, dec_data, manager, before_handler, after_handler, exc_handler
+):
+    await manager.aio_execute_handler(before_handler, dec_data)
+    try:
+        result = await func(
+            *dec_data.func_info.args, **dec_data.func_info.kwargs
+        )
+        dec_data.func_info.result = result
+    except Exception as exception:
+        dec_data.func_info.exception = exception
+        result = await manager.aio_execute_handler(exc_handler, dec_data)
+    else:
+        await manager.aio_execute_handler(after_handler, dec_data)
+
+    return result
+
+
+def _wrapper(
+    func, dec_data, manager, before_handler, after_handler, exc_handler
+):
+    manager.execute_handler(before_handler, dec_data)
+    try:
+        result = func(*dec_data.func_info.args, **dec_data.func_info.kwargs)
+        dec_data.func_info.result = result
+    except Exception as exception:
+        dec_data.func_info.exception = exception
+        result = manager.execute_handler(exc_handler, dec_data)
+    else:
+        manager.execute_handler(after_handler, dec_data)
+
+    return result
+
+
 def catch(
     *dec_args,
     exclude: bool = False,
@@ -30,40 +64,14 @@ def catch(
             dec_data = DecData(
                 exceptions=exceptions, exclude=exclude, func_info=func_info,
             )
-
+            wrapper_args = (
+                func, dec_data, manager,
+                before_handler, after_handler, exc_handler
+            )
             if asyncio.iscoroutinefunction(func):
-                async def async_func():
-                    await manager.aio_execute_handler(before_handler, dec_data)
-                    try:
-                        func_result = await func(
-                            *func_info.args, **func_info.kwargs
-                        )
-                        func_info.result = func_result
-                    except Exception as exception:
-                        dec_data.func_info.exception = exception
-                        func_result = await manager.aio_execute_handler(
-                            exc_handler, dec_data
-                        )
-                    else:
-                        await manager.aio_execute_handler(
-                            after_handler, dec_data
-                        )
-                    return func_result
-                wrapper_result = async_func()
+                wrapper_result = _async_wrapper(*wrapper_args)
             else:
-                manager.execute_handler(before_handler, dec_data)
-                try:
-                    func_result = func(*func_info.args, **func_info.kwargs)
-                    func_info.result = func_result
-                except Exception as exception:
-                    dec_data.func_info.exception = exception
-                    func_result = manager.execute_handler(
-                        exc_handler, dec_data
-                    )
-                else:
-                    manager.execute_handler(after_handler, dec_data)
-
-                wrapper_result = func_result
+                wrapper_result = _wrapper(*wrapper_args)
 
             return wrapper_result
 
