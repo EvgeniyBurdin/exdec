@@ -38,12 +38,54 @@ class Manager:
     ):
         self.default_exception_classes = default_exception_classes
 
-        if before_handler is None:
-            self.before_handler = self.default_before_handler
-        if after_handler is None:
-            self.after_handler = self.default_after_handler
-        if exc_handler is None:
-            self.exc_handler = self.default_exc_handlerr
+        self.before_handler = self.default_before_handler \
+            if before_handler is None else before_handler
+
+        self.after_handler = self.default_after_handler \
+            if after_handler is None else after_handler
+
+        self.exc_handler = self.default_exc_handler \
+            if exc_handler is None else exc_handler
+
+    @staticmethod
+    def check_handler(handler: Callable[[FuncInfo], Any]):
+
+        if not callable(handler):
+            msg = f"Handler '{handler}' not callable"
+            raise ExDecManagerException(msg)
+
+        is_func_info = False
+        signature = inspect.signature(handler)
+        for param in signature.parameters.values():
+            if param.annotation is FuncInfo:
+                is_func_info = True
+                break
+
+        if not is_func_info:
+            msg = f"'{handler}' handler has no argument with "
+            msg += f"{FuncInfo} annotation"
+            raise ExDecManagerException(msg)
+
+    def make_handlers(
+        self,
+        before_handler: Optional[Callable[[FuncInfo], Any]],
+        after_handler: Optional[Callable[[FuncInfo], Any]],
+        exc_handler: Optional[Callable[[FuncInfo], Any]],
+    ) -> Tuple[Callable[[FuncInfo], Any]]:
+
+        before_handler = self.before_handler \
+            if before_handler is None else before_handler
+
+        after_handler = self.after_handler \
+            if after_handler is None else after_handler
+
+        exc_handler = self.exc_handler \
+            if exc_handler is None else exc_handler
+
+        for handler in (before_handler, after_handler, exc_handler):
+            self.check_handler(handler)
+
+        return before_handler, after_handler, exc_handler
 
     def make_exceptions(self, dec_args: tuple) -> Tuple[Type[Exception], ...]:
 
