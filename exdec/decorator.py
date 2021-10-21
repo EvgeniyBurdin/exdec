@@ -11,8 +11,8 @@ manager = Manager()
 def catch(
     *dec_args,
     exclude: bool = False,
-    before_handler: Optional[Callable[[FuncInfo], Any]] = None,
-    after_handler: Optional[Callable[[FuncInfo], Any]] = None,
+    before_handler: Optional[Callable[[FuncInfo], None]] = None,
+    after_handler: Optional[Callable[[FuncInfo], None]] = None,
     exc_handler: Optional[Callable[[FuncInfo], Any]] = None,
     manager: Manager = manager,
 ):

@@ -29,8 +29,8 @@ class Manager:
     def __init__(
         self,
         default_exception_classes: Tuple[Type[Exception], ...] = (Exception, ),
-        before_handler: Callable[[FuncInfo], Any] = Handler.before,
-        after_handler: Callable[[FuncInfo], Any] = Handler.after,
+        before_handler: Callable[[FuncInfo], None] = Handler.before,
+        after_handler: Callable[[FuncInfo], None] = Handler.after,
         exc_handler: Callable[[FuncInfo], Any] = Handler.exc,
         try_reraise: Callable[[DecData], None] = try_reraise,
         check_handler: Callable[
