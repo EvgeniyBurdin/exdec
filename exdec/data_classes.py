@@ -8,6 +8,9 @@ from typing import Any, Callable, Dict, Optional, Tuple, Type
 class FuncInfo:
     """ Decorated function information.
 
+    `result` will be available in the handler after calling the function if
+    no exception occurs.
+
     If an exception occurs during the execution of the function, it will be
     stored in `exception`. This information will be available in the exception
     handler.
@@ -15,6 +18,7 @@ class FuncInfo:
     func: Callable
     args: Tuple[Any, ...]
     kwargs: Dict[str, Any]
+    result: Any = None
     exception: Optional[Exception] = None
 
 

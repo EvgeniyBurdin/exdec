@@ -26,38 +26,44 @@ def catch(
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
+            func_info = FuncInfo(func=func, args=args, kwargs=kwargs)
             dec_data = DecData(
-                exceptions=exceptions, exclude=exclude,
-                func_info=FuncInfo(func=func, args=args, kwargs=kwargs),
+                exceptions=exceptions, exclude=exclude, func_info=func_info,
             )
 
             if asyncio.iscoroutinefunction(func):
                 async def async_func():
                     await manager.aio_execute_handler(before_handler, dec_data)
                     try:
-                        result = await func(*args, **kwargs)
+                        func_result = await func(
+                            *func_info.args, **func_info.kwargs
+                        )
+                        func_info.result = func_result
                     except Exception as exception:
                         dec_data.func_info.exception = exception
-                        result = await manager.aio_execute_handler(
+                        func_result = await manager.aio_execute_handler(
                             exc_handler, dec_data
                         )
                     else:
                         await manager.aio_execute_handler(
                             after_handler, dec_data
                         )
-                    return result
+                    return func_result
                 wrapper_result = async_func()
             else:
                 manager.execute_handler(before_handler, dec_data)
                 try:
-                    wrapper_result = func(*args, **kwargs)
+                    func_result = func(*func_info.args, **func_info.kwargs)
+                    func_info.result = func_result
                 except Exception as exception:
                     dec_data.func_info.exception = exception
-                    wrapper_result = manager.execute_handler(
+                    func_result = manager.execute_handler(
                         exc_handler, dec_data
                     )
                 else:
                     manager.execute_handler(after_handler, dec_data)
+
+                wrapper_result = func_result
 
             return wrapper_result
 
