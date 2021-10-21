@@ -7,10 +7,6 @@ from .handlers import after_handler, before_handler, exc_handler
 from .utils import check_exception, check_handler, try_reraise
 
 
-class ExDecManagerException(Exception):
-    pass
-
-
 def execute_wrapper(method):
     @functools.wraps(method)
     def execute(self, handler: Callable, dec_data: DecData) -> Any:
