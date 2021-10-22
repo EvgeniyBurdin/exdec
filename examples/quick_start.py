@@ -67,7 +67,7 @@ class MyException_2(Exception):
     pass
 
 
-# Catching all exceptions except for (MyException_1, MyException_2)
+# Catching all exceptions, except for (MyException_1, MyException_2)
 @catch(MyException_1, MyException_2, exclude=True, exc_handler=exc_handler)
 def safe_div_4(x: int, y: int) -> float:
     result = x / y
@@ -83,7 +83,7 @@ assert z == HANDLER_RESULT
 def exc_handler_reraise(func_info: FuncInfo) -> float:
     exc = func_info.exception
     print(f">>> Caught an exception {type(exc)}: {exc}. \nRERAISE!")
-    raise func_info.exception
+    raise exc
 
 
 # Catching only (MyException_1, ZeroDivisionError) and reraise
