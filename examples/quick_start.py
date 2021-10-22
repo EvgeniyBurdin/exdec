@@ -82,15 +82,15 @@ assert z == NEW_RESULT
 
 def exc_handler_reraise(func_info: FuncInfo) -> float:
     exc = func_info.exception
-    print(f">>> Caught an exception {type(exc)}: {exc}.")
+    print(f">>> Caught an exception {type(exc)}: {exc}. \nRERAISE!")
     raise func_info.exception
 
 
 # Catching only ZeroDivisionError and reraise
 @catch(ZeroDivisionError, exc_handler=exc_handler_reraise)
-def safe_div_5(x: int, y: int) -> float:
+def div(x: int, y: int) -> float:
     result = x / y
     return result
 
 
-z = safe_div_5(3, 0)
+z = div(3, 0)
