@@ -12,6 +12,10 @@ pip install exdec
 
 ## Quick start
 
+You can decorate both synchronous and asynchronous functions and methods.
+
+More examples in the [examples folder](https://github.com/EvgeniyBurdin/exdec/tree/main/examples).
+
 ```python
 from typing import Optional
 
