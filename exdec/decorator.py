@@ -13,17 +13,18 @@ async def _async_wrapper(
 ):
     await manager.aio_execute_handler(before_handler, dec_data)
     try:
-        result = await func(
+        dec_data.func_info.result = await func(
             *dec_data.func_info.args, **dec_data.func_info.kwargs
         )
-        dec_data.func_info.result = result
     except Exception as exception:
         dec_data.func_info.exception = exception
-        result = await manager.aio_execute_handler(exc_handler, dec_data)
+        dec_data.func_info.result = await manager.aio_execute_handler(
+            exc_handler, dec_data
+        )
     else:
         await manager.aio_execute_handler(after_handler, dec_data)
 
-    return result
+    return dec_data.func_info.result
 
 
 def _wrapper(
@@ -31,15 +32,18 @@ def _wrapper(
 ):
     manager.execute_handler(before_handler, dec_data)
     try:
-        result = func(*dec_data.func_info.args, **dec_data.func_info.kwargs)
-        dec_data.func_info.result = result
+        dec_data.func_info.result = func(
+            *dec_data.func_info.args, **dec_data.func_info.kwargs
+        )
     except Exception as exception:
         dec_data.func_info.exception = exception
-        result = manager.execute_handler(exc_handler, dec_data)
+        dec_data.func_info.result = manager.execute_handler(
+            exc_handler, dec_data
+        )
     else:
         manager.execute_handler(after_handler, dec_data)
 
-    return result
+    return dec_data.func_info.result
 
 
 def catch(
