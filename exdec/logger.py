@@ -1,3 +1,5 @@
+""" Module with simple logger.
+"""
 import logging
 
 logger = logging.getLogger("exdec")
