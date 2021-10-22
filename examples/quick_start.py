@@ -93,4 +93,4 @@ def div(x: int, y: int) -> float:
     return result
 
 
-z = div(3, 0)
+div(3, 0)  # Exception
