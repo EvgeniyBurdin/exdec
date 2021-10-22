@@ -86,8 +86,8 @@ def exc_handler_reraise(func_info: FuncInfo) -> float:
     raise func_info.exception
 
 
-# Catching only ZeroDivisionError and reraise
-@catch(ZeroDivisionError, exc_handler=exc_handler_reraise)
+# Catching only (MyException_1, ZeroDivisionError) and reraise
+@catch(MyException_1, ZeroDivisionError, exc_handler=exc_handler_reraise)
 def div(x: int, y: int) -> float:
     result = x / y
     return result
