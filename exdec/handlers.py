@@ -15,8 +15,7 @@ from .logger import logger
 
 
 def before_handler(func_info: FuncInfo) -> None:
-    """ It is called before the operation of the function
-    from `func_info.func`.
+    """ Called before the operation of the function from `func_info.func`.
 
     Attention!
     Can change `func_info.args` and `func_info.kwargs`, changed values will
