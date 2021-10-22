@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exdec.data_classes import FuncInfo
 from exdec.decorator import catch
 
@@ -6,7 +8,7 @@ from exdec.decorator import catch
 
 # Catching all exceptions
 @catch
-def safe_div_1(x: int, y: int) -> float:
+def safe_div_1(x: int, y: int) -> Optional[float]:
     result = x / y
     return result
 
@@ -21,7 +23,7 @@ assert z is None
 
 # Catching only ZeroDivisionError
 @catch(ZeroDivisionError)
-def safe_div_2(x: int, y: int) -> float:
+def safe_div_2(x: int, y: int) -> Optional[float]:
     result = x / y
     return result
 
@@ -74,3 +76,23 @@ def safe_div_4(x: int, y: int) -> float:
 
 z = safe_div_4(3, 0)
 assert z == NEW_RESULT
+
+
+# 5 --------------------------------------------------------------------------
+
+def exc_handler_reraise(func_info: FuncInfo) -> float:
+    exc = func_info.exception
+    print(f">>> Caught an exception {type(exc)}: {exc}.")
+    raise func_info.exception
+
+
+# Catching all exceptions except for (MyException_1, MyException_2) and reraise
+@catch(
+    MyException_1, MyException_2, exclude=True, exc_handler=exc_handler_reraise
+)
+def safe_div_4(x: int, y: int) -> float:
+    result = x / y
+    return result
+
+
+z = safe_div_4(3, 0)

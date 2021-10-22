@@ -15,10 +15,10 @@ def try_reraise(dec_data: DecData):
 
     if dec_data.exclude:
         if isinstance(func_exception, exception_classes):
-            raise
+            raise dec_data.func_info.exception
     else:
         if not isinstance(func_exception, exception_classes):
-            raise
+            raise dec_data.func_info.exception
 
 
 def check_handler(handler: Callable[[FuncInfo], Any]):
