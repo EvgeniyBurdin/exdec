@@ -86,13 +86,11 @@ def exc_handler_reraise(func_info: FuncInfo) -> float:
     raise func_info.exception
 
 
-# Catching all exceptions except for (MyException_1, MyException_2) and reraise
-@catch(
-    MyException_1, MyException_2, exclude=True, exc_handler=exc_handler_reraise
-)
-def safe_div_4(x: int, y: int) -> float:
+# Catching only ZeroDivisionError and reraise
+@catch(ZeroDivisionError, exc_handler=exc_handler_reraise)
+def safe_div_5(x: int, y: int) -> float:
     result = x / y
     return result
 
 
-z = safe_div_4(3, 0)
+z = safe_div_5(3, 0)
