@@ -2,7 +2,15 @@
 
 [![PyPI](https://img.shields.io/pypi/v/exdec)](https://pypi.org/project/exdec) [![Total alerts](https://img.shields.io/lgtm/alerts/g/EvgeniyBurdin/exdec.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/EvgeniyBurdin/exdec/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/EvgeniyBurdin/exdec.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/EvgeniyBurdin/exdec/context:python)
 
-Decorator for catching exceptions in functions and methods (synchronous and asynchronous).
+Decorator for catching exceptions in functions and methods.
+
+- Works with both synchronous and asynchronous functions and methods;
+- Catches exceptions of the required types;
+- Three types of handlers are available: before the start of the function, after its end, and the exception handler;
+- Handlers can be both synchronous and asynchronous;
+- All current information about the function is available in any handler;
+- Ability to change the incoming data and the result of the function in the handlers;
+- Several ways to fine-tune and pre-configure the decorator;
 
 ## Installation
 
