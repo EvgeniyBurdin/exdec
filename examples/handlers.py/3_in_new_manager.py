@@ -1,6 +1,6 @@
 from exdec.data_classes import FuncInfo
-from exdec.decorator import catch
-
+from exdec.decorator import catch as _catch
+from exdec.manager import Manager
 
 EXC_HANDLER_RESULT = 0.0
 
@@ -44,12 +44,22 @@ handlers = Handlers()
 
 # ----------------------------------------------------------------------------
 
-# Catching all exceptions
-@catch(
+manager = Manager(
     before_handler=before_handler,
     after_handler=handlers.after,
-    exc_handler=handlers.exc
+    exc_handler=handlers.exc,
 )
+
+
+def catch(*args, **kwargs):  # define new decorator
+    kwargs["manager"] = manager
+    return _catch(*args, **kwargs)
+
+
+# ----------------------------------------------------------------------------
+
+# Catching all exceptions
+@catch  # <- new decorator
 def div(x: int, y: int) -> float:
     result = x / y
     return result
