@@ -34,7 +34,7 @@ assert z is None
 
 # 3 --------------------------------------------------------------------------
 
-NEW_RESULT = 0.01
+HANDLER_RESULT = 0.0
 
 
 def exc_handler(func_info: FuncInfo) -> float:
@@ -42,8 +42,8 @@ def exc_handler(func_info: FuncInfo) -> float:
     print(f"Caught an exception {type(exc)}: {exc}.")
     fname = func_info.func.__name__
     args = func_info.args
-    print(f"Result {fname}{args} changed to {NEW_RESULT}")
-    return NEW_RESULT
+    print(f"Result {fname}{args} changed to {HANDLER_RESULT}")
+    return HANDLER_RESULT
 
 
 # Catching only ZeroDivisionError
@@ -54,7 +54,7 @@ def safe_div_3(x: int, y: int) -> float:
 
 
 z = safe_div_3(3, 0)
-assert z == NEW_RESULT
+assert z == HANDLER_RESULT
 
 
 # 4 --------------------------------------------------------------------------
@@ -75,7 +75,7 @@ def safe_div_4(x: int, y: int) -> float:
 
 
 z = safe_div_4(3, 0)
-assert z == NEW_RESULT
+assert z == HANDLER_RESULT
 
 
 # 5 --------------------------------------------------------------------------
