@@ -1,7 +1,7 @@
 import pytest
-
 from exdec.data_classes import DecData
-from exdec.utils import try_reraise
+from exdec.utils import (ExDecException, check_exception_class, check_handler,
+                         try_reraise)
 
 
 def test_try_reraise_success(dec_data: DecData, custom_exception):
@@ -10,7 +10,7 @@ def test_try_reraise_success(dec_data: DecData, custom_exception):
     dec_data.exclude = False
     dec_data.exceptions = (type(custom_exception), )
     # Exception occurred not from `dec_data.exceptions` tuple, and they
-    # are reraised because `exclude` is False
+    # are reraised
     with pytest.raises(Exception):
         try_reraise(dec_data)
 
@@ -36,4 +36,38 @@ def test_try_reraise_fail(dec_data: DecData, custom_exception):
     try_reraise(dec_data)
 
 
-# def test_check_handler_success
+def test_check_handler_success(handler):
+
+    check_handler(handler)
+
+
+def test_check_handler_fail(func):
+
+    handler = 1
+    # Handler not callable
+    with pytest.raises(ExDecException):
+        check_handler(handler)
+
+    handler = func
+    # Handler has no argument with the `FuncInfo` annotation
+    with pytest.raises(ExDecException):
+        check_handler(handler)
+
+
+def test_check_exception_class_success(custom_exception):
+
+    exception_class = type(custom_exception)
+    check_exception_class(exception_class)
+
+
+def test_check_exception_class_fail():
+
+    exception_class = 1
+    # exception_class is not type
+    with pytest.raises(ExDecException):
+        check_exception_class(exception_class)
+
+    exception_class = type(1)
+    # exception_class is not Exception subclass
+    with pytest.raises(ExDecException):
+        check_exception_class(exception_class)
