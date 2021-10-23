@@ -1,6 +1,7 @@
 from typing import Any, Callable
 
 import pytest
+
 from exdec.data_classes import DecData, FuncInfo
 from exdec.utils import (ExDecException, check_exception_class, check_handler,
                          try_reraise)
