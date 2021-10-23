@@ -52,7 +52,7 @@ manager = Manager(
 
 
 def catch(*args, **kwargs):  # define new decorator
-    kwargs["manager"] = manager
+    kwargs["manager"] = kwargs.get("manager", manager)
     return _catch(*args, **kwargs)
 
 

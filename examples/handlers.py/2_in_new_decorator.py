@@ -26,7 +26,7 @@ class Handlers():
         Can change the value of `func_info.result`, and it will be used as a
         result of the `func_info.func`.
         """
-        print(f"after_handler: {func_info}")
+        print(f"after: {func_info}")
 
     def exc(self, func_info: FuncInfo) -> float:
         """ Called if an exception occurs during the execution of
@@ -34,7 +34,7 @@ class Handlers():
 
         Returns the value to be used as a result of `func_info.func`.
         """
-        print(f"exc_handler: {func_info}")
+        print(f"exc: {func_info}")
 
         return EXC_HANDLER_RESULT
 
@@ -45,9 +45,9 @@ handlers = Handlers()
 # ----------------------------------------------------------------------------
 
 def catch(*args, **kwargs):  # define new decorator
-    kwargs["before_handler"] = before_handler
-    kwargs["after_handler"] = handlers.after
-    kwargs["exc_handler"] = handlers.exc
+    kwargs["before_handler"] = kwargs.get("before_handler", before_handler)
+    kwargs["after_handler"] = kwargs.get("after_handler", handlers.after)
+    kwargs["exc_handler"] = kwargs.get("exc_handler", handlers.exc)
     return _catch(*args, **kwargs)
 
 
