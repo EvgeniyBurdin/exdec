@@ -39,7 +39,7 @@ def check_handler(handler: Callable[[FuncInfo], Any]):
         raise ExDecException(msg)
 
 
-def check_exception(exception: Exception):
+def check_exception_class(exception: Exception):
 
     if not type(exception) is type or not issubclass(exception, Exception):
         msg = "The positional arguments of the 'cath' decorator must "

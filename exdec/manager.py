@@ -4,7 +4,7 @@ from typing import Any, Callable, Optional, Tuple, Type
 
 from .data_classes import DecData, FuncInfo
 from .handlers import after_handler, before_handler, exc_handler
-from .utils import check_exception, check_handler, try_reraise
+from .utils import check_exception_class, check_handler, try_reraise
 
 
 def execute_wrapper(method):
@@ -36,7 +36,9 @@ class Manager:
         check_handler: Callable[
             [Callable[[FuncInfo], Any]], None
         ] = check_handler,
-        check_exception: Callable[[Exception], None] = check_exception,
+        check_exception_class: Callable[
+            [Exception], None
+        ] = check_exception_class,
     ):
         self.default_exception_classes = default_exception_classes
 
@@ -46,7 +48,7 @@ class Manager:
 
         self.try_reraise = try_reraise
         self.check_handler = check_handler
-        self.check_exception = check_exception
+        self.check_exception_class = check_exception_class
 
     def make_handlers(
         self,
@@ -77,7 +79,7 @@ class Manager:
             exceptions = self.default_exception_classes
 
         for exception in exceptions:
-            self.check_exception(exception)
+            self.check_exception_class(exception)
 
         return exceptions
 
