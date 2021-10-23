@@ -41,3 +41,5 @@ def exc_handler(func_info: FuncInfo) -> Any:
     Returns the value to be used as a result of `func_info.func`.
     """
     logger.error(f"exc_handler: {func_info}")
+
+    return func_info.result
