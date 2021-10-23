@@ -118,5 +118,5 @@ def div(x: int, y: int) -> float:
     return result
 
 
-div(3, 0)  # Exception
+div(3, 0)  # ZeroDivisionError
 ```

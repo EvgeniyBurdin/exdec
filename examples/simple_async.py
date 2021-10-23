@@ -91,4 +91,4 @@ math_functions = MathFunctions()
 z = asyncio.run(math_functions.safe_div(3, 0))
 assert z is None
 
-asyncio.run(math_functions.div(3, 0))  # Exception
+asyncio.run(math_functions.div(3, 0))  # ZeroDivisionError
