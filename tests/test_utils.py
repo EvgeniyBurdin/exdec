@@ -62,12 +62,8 @@ def test_check_exception_class_success(custom_exception):
 
 def test_check_exception_class_fail():
 
-    exception_class = 1
-    # exception_class is not type
     with pytest.raises(ExDecException):
-        check_exception_class(exception_class)
+        check_exception_class(1)  # is not type
 
-    exception_class = type(1)
-    # exception_class is not Exception subclass
     with pytest.raises(ExDecException):
-        check_exception_class(exception_class)
+        check_exception_class(type(1))  # is not Exception subclass
