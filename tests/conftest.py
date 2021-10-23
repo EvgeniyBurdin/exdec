@@ -33,12 +33,14 @@ def handler() -> Callable[[FuncInfo], Any]:
 
 
 @pytest.fixture()
-def func_info(func):
+def func_info(func: Callable) -> FuncInfo:
     return FuncInfo(func=func, args=tuple(), kwargs=dict())
 
 
 @pytest.fixture()
-def dec_data(func_info, exception_classes):
+def dec_data(
+    func_info: FuncInfo, exception_classes: Tuple[Type[Exception], ...]
+) -> DecData:
     return DecData(
         exceptions=exception_classes, exclude=False, func_info=func_info
     )
