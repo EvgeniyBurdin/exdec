@@ -1,7 +1,7 @@
-from typing import Tuple, Type
+from typing import Any, Callable, Tuple, Type
 
 import pytest
-from exdec.data_classes import Callable, DecData, FuncInfo, Any
+from exdec.data_classes import DecData, FuncInfo
 
 
 class CustomException(Exception):
