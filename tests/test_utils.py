@@ -56,8 +56,7 @@ def test_check_handler_fail(func):
 
 def test_check_exception_class_success(custom_exception):
 
-    exception_class = type(custom_exception)
-    check_exception_class(exception_class)
+    check_exception_class(type(custom_exception))
 
 
 def test_check_exception_class_fail():
