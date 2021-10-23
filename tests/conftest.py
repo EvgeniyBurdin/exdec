@@ -1,6 +1,7 @@
-import pytest
+from typing import Tuple, Type
 
-from exdec.data_classes import FuncInfo, DecData
+import pytest
+from exdec.data_classes import Callable, DecData, FuncInfo, Any
 
 
 class CustomException(Exception):
@@ -8,25 +9,32 @@ class CustomException(Exception):
 
 
 @pytest.fixture(scope="session")
-def custom_exception():
-    return CustomException("exception message")
+def custom_exception() -> CustomException:
+    return CustomException("Custom exception message")
 
 
 @pytest.fixture(scope="session")
-def exception_classes():
+def exception_classes() -> Tuple[Type[Exception], ...]:
     return (Exception, )
 
 
 @pytest.fixture(scope="session")
-def simple_func():
-    def func():
+def func() -> Callable:
+    def func_():
         pass
-    return func
+    return func_
+
+
+@pytest.fixture(scope="session")
+def handler() -> Callable[[FuncInfo], Any]:
+    def handler_(func_info: FuncInfo):
+        pass
+    return handler_
 
 
 @pytest.fixture()
-def func_info(simple_func):
-    return FuncInfo(func=simple_func, args=tuple(), kwargs=dict())
+def func_info(func):
+    return FuncInfo(func=func, args=tuple(), kwargs=dict())
 
 
 @pytest.fixture()
