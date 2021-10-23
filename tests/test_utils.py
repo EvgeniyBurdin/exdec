@@ -43,15 +43,12 @@ def test_check_handler_success(handler):
 
 def test_check_handler_fail(func):
 
-    handler = 1
-    # Handler not callable
     with pytest.raises(ExDecException):
-        check_handler(handler)
+        check_handler(1)  # Handler not callable
 
-    handler = func
-    # Handler has no argument with the `FuncInfo` annotation
     with pytest.raises(ExDecException):
-        check_handler(handler)
+        # Handler has no argument with the `FuncInfo` annotation
+        check_handler(func)
 
 
 def test_check_exception_class_success(custom_exception):
