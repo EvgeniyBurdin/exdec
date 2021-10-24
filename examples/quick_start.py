@@ -9,14 +9,11 @@ from exdec.decorator import catch
 # Catching all exceptions
 @catch
 def safe_div_1(x: int, y: int) -> Optional[float]:
-    result = x / y
-    return result
+    return x / y
 
 
-z = safe_div_1(3, 3)
-assert z == 1.0
-z = safe_div_1(3, 0)
-assert z is None
+assert safe_div_1(3, 3) == 1.0
+assert safe_div_1(3, 0) is None
 
 
 # 2 --------------------------------------------------------------------------
@@ -24,12 +21,10 @@ assert z is None
 # Catching only ZeroDivisionError
 @catch(ZeroDivisionError)
 def safe_div_2(x: int, y: int) -> Optional[float]:
-    result = x / y
-    return result
+    return x / y
 
 
-z = safe_div_2(3, 0)
-assert z is None
+assert safe_div_2(3, 0) is None
 
 
 # 3 --------------------------------------------------------------------------
@@ -38,23 +33,18 @@ HANDLER_RESULT = 0.0
 
 
 def exc_handler(func_info: FuncInfo) -> float:
-    exc = func_info.exception
-    fname = func_info.func.__name__
-    args = func_info.args
-    msg = f"Caught an exception {type(exc)}: {exc}."
-    print(f"{msg} Result {fname}{args} changed to {HANDLER_RESULT}")
+    msg = f"Caught an exception, func_info={func_info}."
+    print(f"{msg} Result changed to {HANDLER_RESULT}")
     return HANDLER_RESULT
 
 
 # Catching only ZeroDivisionError
 @catch(ZeroDivisionError, exc_handler=exc_handler)
 def safe_div_3(x: int, y: int) -> float:
-    result = x / y
-    return result
+    return x / y
 
 
-z = safe_div_3(3, 0)
-assert z == HANDLER_RESULT
+assert safe_div_3(3, 0) == HANDLER_RESULT
 
 
 # 4 --------------------------------------------------------------------------
@@ -70,27 +60,39 @@ class MyException_2(Exception):
 # Catching all exceptions, except for (MyException_1, MyException_2)
 @catch(MyException_1, MyException_2, exclude=True, exc_handler=exc_handler)
 def safe_div_4(x: int, y: int) -> float:
-    result = x / y
-    return result
+    return x / y
 
 
-z = safe_div_4(3, 0)
-assert z == HANDLER_RESULT
+assert safe_div_4(3, 0) == HANDLER_RESULT
 
 
 # 5 --------------------------------------------------------------------------
 
+# For methods everything works the same
+class MathFunctions:
+
+    # Catching only MyException_1
+    @catch(MyException_1)
+    def safe_div_5(self, x: int, y: int) -> Optional[float]:
+        return x / y
+
+
+math_functions = MathFunctions()
+assert math_functions.safe_div_5(3, 0) is None
+
+
+# 6 --------------------------------------------------------------------------
+
 def exc_handler_reraise(func_info: FuncInfo) -> float:
     exc = func_info.exception
-    print(f">>> Caught an exception {type(exc)}: {exc}. \nRERAISE!")
+    print(f"Caught an exception, func_info={func_info}. \n RERAISE!")
     raise exc
 
 
 # Catching only (MyException_1, ZeroDivisionError) and reraise
 @catch(MyException_1, ZeroDivisionError, exc_handler=exc_handler_reraise)
-def div(x: int, y: int) -> float:
-    result = x / y
-    return result
+def div_6(x: int, y: int) -> float:
+    return x / y
 
 
-div(3, 0)  # ZeroDivisionError
+div_6(3, 0)  # ZeroDivisionError

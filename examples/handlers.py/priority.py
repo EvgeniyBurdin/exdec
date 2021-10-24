@@ -14,8 +14,7 @@ from exdec.manager import Manager
 # If an exception occurs, then the decorated function returns `None`
 @default_catch
 def func():
-    z = 1 / 0
-    return z
+    return 1 / 0
 
 
 assert func() is None
@@ -68,7 +67,6 @@ def custom_catch(*args, **kwargs):
     kwargs["manager"] = kwargs.get("manager", manager)
     # override only exc_handler
     kwargs["exc_handler"] = kwargs.get("exc_handler", dec_handlers.exc)
-
     return default_catch(*args, **kwargs)
 
 
@@ -84,8 +82,7 @@ print()
 
 @custom_catch
 def bar():
-    z = 1 / 0
-    print(z)
+    return 1 / 0
 
 
 bar()  # `dec_handlers.exc`
@@ -105,8 +102,7 @@ print()
 
 @custom_catch(before_handler=ind_handlers.before, exc_handler=ind_handlers.exc)
 def bizzzz():
-    z = 1 / 0
-    print(z)
+    return 1 / 0
 
 
 bizzzz()  # `ind_handlers.before` and `ind_handlers.exc`
