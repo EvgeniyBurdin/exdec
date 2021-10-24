@@ -1,10 +1,9 @@
 from typing import Any, Callable
 
 import pytest
-
 from exdec.data_classes import DecData, FuncInfo
 from exdec.utils import (ExDecException, check_exception_class, check_handler,
-                         try_reraise)
+                         default_exc_handler, try_reraise)
 
 
 def test_try_reraise_success(dec_data: DecData, custom_exception: Exception):
@@ -66,3 +65,9 @@ def test_check_exception_class_fail():
 
     with pytest.raises(ExDecException):
         check_exception_class(type(1))  # is not Exception subclass
+
+
+def test_default_exc_handler(func_info: FuncInfo):
+
+    check_handler(default_exc_handler)
+    assert default_exc_handler(func_info) is None
