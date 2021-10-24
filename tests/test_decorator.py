@@ -51,6 +51,7 @@ def test_wrapper(func: Callable, dec_data: DecData):
     assert not fm.is_called["before_handler"]
     assert not fm.is_called["after_handler"]
     assert not fm.is_called["exc_handler"]
+    assert dec_data.func_info.exception is None
 
     fm.clear_handler_calls()
 
@@ -60,6 +61,7 @@ def test_wrapper(func: Callable, dec_data: DecData):
     assert fm.is_called["before_handler"]
     assert fm.is_called["after_handler"]
     assert not fm.is_called["exc_handler"]
+    assert dec_data.func_info.exception is None
 
     fm.clear_handler_calls()
 
@@ -67,6 +69,7 @@ def test_wrapper(func: Callable, dec_data: DecData):
     assert not fm.is_called["before_handler"]
     assert not fm.is_called["after_handler"]
     assert fm.is_called["exc_handler"]
+    assert isinstance(dec_data.func_info.exception, Exception)
 
 
 def test_async_wrapper(dec_data: DecData, manager: Manager):
@@ -79,6 +82,7 @@ def test_async_wrapper(dec_data: DecData, manager: Manager):
     assert not fm.is_called["before_handler"]
     assert not fm.is_called["after_handler"]
     assert not fm.is_called["exc_handler"]
+    assert dec_data.func_info.exception is None
 
     fm.clear_handler_calls()
 
@@ -89,6 +93,7 @@ def test_async_wrapper(dec_data: DecData, manager: Manager):
     assert fm.is_called["before_handler"]
     assert fm.is_called["after_handler"]
     assert not fm.is_called["exc_handler"]
+    assert dec_data.func_info.exception is None
 
     fm.clear_handler_calls()
 
@@ -98,3 +103,4 @@ def test_async_wrapper(dec_data: DecData, manager: Manager):
     assert not fm.is_called["before_handler"]
     assert not fm.is_called["after_handler"]
     assert fm.is_called["exc_handler"]
+    assert isinstance(dec_data.func_info.exception, Exception)
