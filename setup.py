@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='exdec',
-    version='0.4.0',
+    version='0.4.1',
     license='MIT',
     author='Evgeniy Burdin',
     author_email='e.s.burdin@gmail.com',
@@ -18,6 +18,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Topic :: Software Development',
