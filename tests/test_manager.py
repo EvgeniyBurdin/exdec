@@ -9,6 +9,10 @@ def any_handler(FuncInfo: FuncInfo):
     pass
 
 
+def any_func():
+    pass
+
+
 def test_init(manager: Manager):
 
     assert manager.exc_handler == default_exc_handler
@@ -31,4 +35,17 @@ def test_make_handlers(manager: Manager):
     )
     assert before_handler is None
     assert after_handler is None
-    assert exc_handler == default_exc_handler
+    assert exc_handler == manager.exc_handler
+
+
+def test_make_exceptions(manager: Manager):
+
+    exceptions = manager.make_exceptions(dec_args=tuple())
+    assert exceptions == manager.default_exception_classes
+
+    # @catch
+    # def any_func():
+    #     ...
+    # This decorator will make dec_args=(any_func, )
+    exceptions = manager.make_exceptions(dec_args=(any_func, ))
+    assert exceptions == manager.default_exception_classes
