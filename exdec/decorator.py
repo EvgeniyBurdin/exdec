@@ -11,7 +11,7 @@ manager = Manager()
 async def _async_wrapper(
     func, dec_data, manager, before_handler, after_handler, exc_handler
 ):
-    if callable(before_handler):
+    if before_handler is not None:
         await manager.async_execute_handler(before_handler, dec_data)
     try:
         dec_data.func_info.result = await func(
@@ -23,7 +23,7 @@ async def _async_wrapper(
             exc_handler, dec_data
         )
     else:
-        if callable(after_handler):
+        if after_handler is not None:
             await manager.async_execute_handler(after_handler, dec_data)
 
     return dec_data.func_info.result
@@ -32,7 +32,7 @@ async def _async_wrapper(
 def _wrapper(
     func, dec_data, manager, before_handler, after_handler, exc_handler
 ):
-    if callable(before_handler):
+    if before_handler is not None:
         manager.execute_handler(before_handler, dec_data)
     try:
         dec_data.func_info.result = func(
@@ -44,7 +44,7 @@ def _wrapper(
             exc_handler, dec_data
         )
     else:
-        if callable(after_handler):
+        if after_handler is not None:
             manager.execute_handler(after_handler, dec_data)
 
     return dec_data.func_info.result
