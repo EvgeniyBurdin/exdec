@@ -5,7 +5,7 @@ from exdec.data_classes import FuncInfo
 from exdec.manager import Manager
 
 
-def any_handler(FuncInfo: FuncInfo):
+def any_handler(func_info: FuncInfo):
     pass
 
 
