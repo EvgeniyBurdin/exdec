@@ -58,12 +58,8 @@ handlers = Handlers()
     exc_handler=handlers.exc
 )
 def div(x: int, y: int) -> float:
-    result = x / y
-    return result
+    return x / y
 
 
-z = div(4, 2)
-assert z == 2.0
-
-z = div(4, 0)
-assert z == 0
+assert div(4, 2) == 2.0
+assert div(4, 0) == 0

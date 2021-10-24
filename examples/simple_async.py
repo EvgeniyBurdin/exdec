@@ -59,6 +59,7 @@ assert asyncio.run(safe_div_3(3, 0)) == HANDLER_RESULT
 
 # 4 --------------------------------------------------------------------------
 
+# For methods everything works the same
 class MathFunctions:
 
     @catch
