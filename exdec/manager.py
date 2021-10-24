@@ -23,6 +23,10 @@ def execute_wrapper(method):
     return execute
 
 
+def default_exc_handler(func_info: FuncInfo) -> None:
+    return None
+
+
 class Manager:
 
     def __init__(
@@ -30,7 +34,7 @@ class Manager:
         default_exception_classes: Tuple[Type[Exception], ...] = (Exception, ),
         before_handler: Optional[Callable[[FuncInfo], None]] = None,
         after_handler: Optional[Callable[[FuncInfo], None]] = None,
-        exc_handler: Optional[Callable[[FuncInfo], Any]] = None,
+        exc_handler: Callable[[FuncInfo], Any] = default_exc_handler,
         try_reraise: Callable[[DecData], None] = try_reraise,
         check_handler: Callable[
             [Callable[[FuncInfo], Any]], None
@@ -66,8 +70,7 @@ class Manager:
             exc_handler = self.exc_handler
 
         for handler in (before_handler, after_handler, exc_handler):
-            if handler is not None:
-                self.check_handler(handler)
+            self.check_handler(handler)
 
         return before_handler, after_handler, exc_handler
 

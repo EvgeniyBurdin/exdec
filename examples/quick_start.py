@@ -72,8 +72,9 @@ assert safe_div_4(3, 0) == HANDLER_RESULT
 class MathFunctions:
 
     # Catching only MyException_1
-    @catch(MyException_1)
+    # @catch(MyException_1)
     def safe_div_5(self, x: int, y: int) -> Optional[float]:
+        print("===")
         return x / y
 
 

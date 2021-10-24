@@ -19,10 +19,9 @@ async def _async_wrapper(
         )
     except Exception as exception:
         dec_data.func_info.exception = exception
-        if callable(exc_handler):
-            dec_data.func_info.result = await manager.aio_execute_handler(
-                exc_handler, dec_data
-            )
+        dec_data.func_info.result = await manager.aio_execute_handler(
+            exc_handler, dec_data
+        )
     else:
         if callable(after_handler):
             await manager.aio_execute_handler(after_handler, dec_data)
@@ -41,10 +40,9 @@ def _wrapper(
         )
     except Exception as exception:
         dec_data.func_info.exception = exception
-        if callable(exc_handler):
-            dec_data.func_info.result = manager.execute_handler(
-                exc_handler, dec_data
-            )
+        dec_data.func_info.result = manager.execute_handler(
+            exc_handler, dec_data
+        )
     else:
         if callable(after_handler):
             manager.execute_handler(after_handler, dec_data)
