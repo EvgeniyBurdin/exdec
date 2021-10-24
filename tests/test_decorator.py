@@ -4,7 +4,6 @@ from typing import Callable
 from exdec.data_classes import DecData
 from exdec.decorator import _async_wrapper as async_wrapper
 from exdec.decorator import _wrapper as wrapper
-from exdec.manager import Manager
 
 
 class FakeManager:
@@ -72,7 +71,7 @@ def test_wrapper(func: Callable, dec_data: DecData):
     assert isinstance(dec_data.func_info.exception, Exception)
 
 
-def test_async_wrapper(dec_data: DecData, manager: Manager):
+def test_async_wrapper(dec_data: DecData):
 
     fm = FakeManager()
 
