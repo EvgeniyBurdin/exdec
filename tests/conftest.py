@@ -33,6 +33,13 @@ def handler() -> Callable[[FuncInfo], Any]:
     return handler_
 
 
+@pytest.fixture(scope="session")
+def async_handler() -> Callable[[FuncInfo], Any]:
+    async def handler_(func_info: FuncInfo):
+        pass
+    return handler_
+
+
 @pytest.fixture()
 def func_info(func: Callable) -> FuncInfo:
     return FuncInfo(func=func, args=tuple(), kwargs=dict())

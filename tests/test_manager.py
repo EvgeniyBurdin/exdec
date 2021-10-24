@@ -92,3 +92,23 @@ def test_make_exceptions(manager: Manager, func: Callable):
         dec_args=(AnyException_1, AnyException_2, )
     )
     assert exceptions == (AnyException_1, AnyException_2, )
+
+
+def test_execute_handler(
+    manager: Manager, handler: Callable[[FuncInfo], Any], dec_data: DecData
+):
+    result = manager.execute_handler(handler, dec_data)
+    assert result is None
+
+
+def test_async_execute_handler(
+    manager: Manager, dec_data: DecData, handler: Callable[[FuncInfo], Any],
+    async_handler: Callable[[FuncInfo], Any],
+):
+    result = asyncio.run(manager.async_execute_handler(handler, dec_data))
+    assert result is None
+
+    result = asyncio.run(
+        manager.async_execute_handler(async_handler, dec_data)
+    )
+    assert result is None
