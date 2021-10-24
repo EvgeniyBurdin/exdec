@@ -13,6 +13,14 @@ def any_func():
     pass
 
 
+class AnyException_1(Exception):
+    pass
+
+
+class AnyException_2(Exception):
+    pass
+
+
 def test_init(manager: Manager):
 
     assert manager.exc_handler == default_exc_handler
@@ -49,3 +57,8 @@ def test_make_exceptions(manager: Manager):
     # This decorator will make dec_args==(any_func, )
     exceptions = manager.make_exceptions(dec_args=(any_func, ))
     assert exceptions == manager.default_exception_classes
+
+    exceptions = manager.make_exceptions(
+        dec_args=(AnyException_1, AnyException_2, )
+    )
+    assert exceptions == (AnyException_1, AnyException_2, )
