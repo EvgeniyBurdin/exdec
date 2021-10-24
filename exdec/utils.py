@@ -1,11 +1,15 @@
 import inspect
-from typing import Any, Callable
+from typing import Any
 
 from .data_classes import DecData, FuncInfo
 
 
 class ExDecException(Exception):
     pass
+
+
+def default_exc_handler(func_info: FuncInfo) -> None:
+    return None
 
 
 def try_reraise(dec_data: DecData):
@@ -21,7 +25,7 @@ def try_reraise(dec_data: DecData):
             raise dec_data.func_info.exception
 
 
-def check_handler(handler: Callable[[FuncInfo], Any]):
+def check_handler(handler: Any):
 
     if not callable(handler):
         msg = f"Handler '{handler}' not callable"
@@ -39,7 +43,7 @@ def check_handler(handler: Callable[[FuncInfo], Any]):
         raise ExDecException(msg)
 
 
-def check_exception_class(exception: Exception):
+def check_exception_class(exception: Any):
 
     if not type(exception) is type or not issubclass(exception, Exception):
         msg = "The positional arguments of the 'cath' decorator must "

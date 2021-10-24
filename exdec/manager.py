@@ -3,7 +3,8 @@ import functools
 from typing import Any, Callable, Optional, Tuple, Type
 
 from .data_classes import DecData, FuncInfo
-from .utils import check_exception_class, check_handler, try_reraise
+from .utils import (check_exception_class, check_handler, default_exc_handler,
+                    try_reraise)
 
 
 def execute_wrapper(method):
@@ -23,31 +24,26 @@ def execute_wrapper(method):
     return execute
 
 
-def default_exc_handler(func_info: FuncInfo) -> None:
-    return None
-
-
 class Manager:
 
     def __init__(
         self,
-        default_exception_classes: Tuple[Type[Exception], ...] = (Exception, ),
         before_handler: Optional[Callable[[FuncInfo], None]] = None,
         after_handler: Optional[Callable[[FuncInfo], None]] = None,
-        exc_handler: Callable[[FuncInfo], Any] = default_exc_handler,
+        exc_handler: Optional[Callable[[FuncInfo], Any]] = None,
+        default_exception_classes: Tuple[Type[Exception], ...] = (Exception, ),
         try_reraise: Callable[[DecData], None] = try_reraise,
-        check_handler: Callable[
-            [Callable[[FuncInfo], Any]], None
-        ] = check_handler,
-        check_exception_class: Callable[
-            [Exception], None
-        ] = check_exception_class,
+        check_handler: Callable[[Any], None] = check_handler,
+        check_exception_class: Callable[[Any], None] = check_exception_class,
     ):
-        self.default_exception_classes = default_exception_classes
+        if exc_handler is None:
+            exc_handler = default_exc_handler
 
+        self.exc_handler = exc_handler
         self.before_handler = before_handler
         self.after_handler = after_handler
-        self.exc_handler = exc_handler
+
+        self.default_exception_classes = default_exception_classes
 
         self.try_reraise = try_reraise
         self.check_handler = check_handler
@@ -70,7 +66,8 @@ class Manager:
             exc_handler = self.exc_handler
 
         for handler in (before_handler, after_handler, exc_handler):
-            self.check_handler(handler)
+            if handler is not None:
+                self.check_handler(handler)
 
         return before_handler, after_handler, exc_handler
 
