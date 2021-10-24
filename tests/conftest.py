@@ -2,6 +2,7 @@ from typing import Any, Callable, Tuple, Type
 
 import pytest
 from exdec.data_classes import DecData, FuncInfo
+from exdec.manager import Manager
 
 
 class CustomException(Exception):
@@ -44,3 +45,8 @@ def dec_data(
     return DecData(
         exceptions=exception_classes, exclude=False, func_info=func_info
     )
+
+
+@pytest.fixture()
+def manager() -> Manager:
+    return Manager()

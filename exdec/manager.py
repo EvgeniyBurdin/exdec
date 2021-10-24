@@ -9,7 +9,7 @@ from .utils import (check_exception_class, check_handler, default_exc_handler,
 
 def execute_wrapper(method):
     @functools.wraps(method)
-    def execute(self, handler: Callable, dec_data: DecData) -> Any:
+    def _execute(self, handler: Callable, dec_data: DecData) -> Any:
 
         if dec_data.func_info.exception is not None:
             self.try_reraise(dec_data)
@@ -21,7 +21,7 @@ def execute_wrapper(method):
         else:
             return method(self, handler, dec_data)
 
-    return execute
+    return _execute
 
 
 class Manager:
