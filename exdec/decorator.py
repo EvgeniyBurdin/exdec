@@ -12,19 +12,19 @@ async def _async_wrapper(
     func, dec_data, manager, before_handler, after_handler, exc_handler
 ):
     if callable(before_handler):
-        await manager.aio_execute_handler(before_handler, dec_data)
+        await manager.async_execute_handler(before_handler, dec_data)
     try:
         dec_data.func_info.result = await func(
             *dec_data.func_info.args, **dec_data.func_info.kwargs
         )
     except Exception as exception:
         dec_data.func_info.exception = exception
-        dec_data.func_info.result = await manager.aio_execute_handler(
+        dec_data.func_info.result = await manager.async_execute_handler(
             exc_handler, dec_data
         )
     else:
         if callable(after_handler):
-            await manager.aio_execute_handler(after_handler, dec_data)
+            await manager.async_execute_handler(after_handler, dec_data)
 
     return dec_data.func_info.result
 

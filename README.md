@@ -96,8 +96,8 @@ assert safe_div_4(3, 0) == HANDLER_RESULT
 # For methods everything works the same
 class MathFunctions:
 
-    # Catching only MyException_1
-    @catch(MyException_1)
+    # Catching only ZeroDivisionError
+    @catch(ZeroDivisionError)
     def safe_div_5(self, x: int, y: int) -> Optional[float]:
         return x / y
 

@@ -89,7 +89,9 @@ class Manager:
         return handler(dec_data.func_info)
 
     @execute_wrapper
-    async def aio_execute_handler(self, handler: Callable, dec_data: DecData):
+    async def async_execute_handler(
+        self, handler: Callable, dec_data: DecData
+    ):
 
         if asyncio.iscoroutinefunction(handler):
             return await handler(dec_data.func_info)
