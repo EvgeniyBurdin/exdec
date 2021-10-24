@@ -28,12 +28,15 @@ def test_execute_wrapper(
 ):
     fm = FakeManager()
 
+    assert dec_data.func_info.exception is None
+
     _execute = execute_wrapper(FakeManager.execute_handler)
     result = _execute(fm, handler, dec_data)
     assert not fm.is_try_reraise_called
     assert result is None
 
     dec_data.func_info.exception = Exception()
+
     _execute = execute_wrapper(FakeManager.async_execute_handler)
     result = asyncio.run(_execute(fm, handler, dec_data))
     assert fm.is_try_reraise_called
