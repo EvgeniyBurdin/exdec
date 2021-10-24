@@ -46,6 +46,6 @@ def test_make_exceptions(manager: Manager):
     # @catch
     # def any_func():
     #     ...
-    # This decorator will make dec_args=(any_func, )
+    # This decorator will make dec_args==(any_func, )
     exceptions = manager.make_exceptions(dec_args=(any_func, ))
     assert exceptions == manager.default_exception_classes
