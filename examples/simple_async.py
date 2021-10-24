@@ -26,10 +26,10 @@ HANDLER_RESULT = 0.0
 
 def exc_handler(func_info: FuncInfo) -> float:                    # <- usual
     exc = func_info.exception
-    print(f"Caught an exception {type(exc)}: {exc}.")
     fname = func_info.func.__name__
     args = func_info.args
-    print(f"Result {fname}{args} changed to {HANDLER_RESULT}")
+    msg = f"Caught an exception {type(exc)}: {exc}."
+    print(f"{msg} Result {fname}{args} changed to {HANDLER_RESULT}")
     return HANDLER_RESULT
 
 
@@ -52,10 +52,10 @@ class MyException(Exception):
 
 async def async_exc_handler(func_info: FuncInfo) -> float:        # <- async
     exc = func_info.exception
-    print(f"Caught an exception {type(exc)}: {exc}.")
     fname = func_info.func.__name__
     args = func_info.args
-    print(f"Result {fname}{args} changed to {HANDLER_RESULT}")
+    msg = f"async - Caught an exception {type(exc)}: {exc}."
+    print(f"{msg} Result {fname}{args} changed to {HANDLER_RESULT}")
     return HANDLER_RESULT
 
 

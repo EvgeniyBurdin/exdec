@@ -39,10 +39,10 @@ HANDLER_RESULT = 0.0
 
 def exc_handler(func_info: FuncInfo) -> float:
     exc = func_info.exception
-    print(f"Caught an exception {type(exc)}: {exc}.")
     fname = func_info.func.__name__
     args = func_info.args
-    print(f"Result {fname}{args} changed to {HANDLER_RESULT}")
+    msg = f"Caught an exception {type(exc)}: {exc}."
+    print(f"{msg} Result {fname}{args} changed to {HANDLER_RESULT}")
     return HANDLER_RESULT
 
 

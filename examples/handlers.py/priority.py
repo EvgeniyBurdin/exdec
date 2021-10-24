@@ -3,32 +3,25 @@ from exdec.decorator import catch as default_catch
 from exdec.manager import Manager
 
 
-# The standard simple handlers will be used, which are defined in
-# the `exdec.handlers` module and used when creating a default `manager` in
-# the `exdec.manager` module (see the logs in the terminal).
+# Three kinds of handlers can be defined:
+#
+# before_handler: Callable[[FuncInfo], None]
+# after_handler: Callable[[FuncInfo], None]
+# exc_handler: Callable[[FuncInfo], Any]
 
+
+# By default, there are no handlers.
+# If an exception occurs, then the decorated function returns `None`
 @default_catch
-def func1():
-    pass
-
-
-func1()  # `exdec.handlers.before_handler` and `exdec.handlers.after_handler`
-
-print()
-
-
-@default_catch
-def func2():
+def func():
     z = 1 / 0
-    print(z)
+    return z
 
 
-func2()  # `exdec.handlers.before_handler` and `exdec.handlers.exc_handler`
-
-print("-"*40)
+assert func() is None
 
 
-# ---------------------------------------------------------__-----------------
+# ----------------------------------------------------------------------------
 
 class Handlers():
 
@@ -84,7 +77,7 @@ def foo():
     pass
 
 
-foo()  # `exdec.handlers.before_handler` and `man_handlers.after`(!)
+foo()  # `man_handlers.after`
 
 print()
 
@@ -95,7 +88,7 @@ def bar():
     print(z)
 
 
-bar()  # `exdec.handlers.before_handler` and `dec_handlers.exc`(!)
+bar()  # `dec_handlers.exc`
 
 print()
 
@@ -105,7 +98,7 @@ def biz():
     pass
 
 
-biz()  # `ind_handlers.before`(!) and `man_handlers.after`(!)
+biz()  # `ind_handlers.before` and `man_handlers.after`
 
 print()
 
@@ -116,4 +109,4 @@ def bizzzz():
     print(z)
 
 
-bizzzz()  # `ind_handlers.before`(!) and `ind_handlers.exc`(!)
+bizzzz()  # `ind_handlers.before` and `ind_handlers.exc`

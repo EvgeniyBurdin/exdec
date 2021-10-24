@@ -2,6 +2,14 @@ from exdec.data_classes import FuncInfo
 from exdec.decorator import catch as _catch
 from exdec.manager import Manager
 
+
+# Three kinds of handlers can be defined:
+#
+# before_handler: Callable[[FuncInfo], None]
+# after_handler: Callable[[FuncInfo], None]
+# exc_handler: Callable[[FuncInfo], Any]
+
+
 EXC_HANDLER_RESULT = 0.0
 
 
