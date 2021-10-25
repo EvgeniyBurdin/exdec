@@ -50,6 +50,11 @@ def _wrapper(
     return dec_data.func_info.result
 
 
+def dec_args0_is_func(dec_args: tuple) -> bool:
+
+    return dec_args and callable(dec_args[0]) and not type(dec_args[0]) is type
+
+
 def catch(
     *dec_args,
     exclude: bool = False,
@@ -85,7 +90,7 @@ def catch(
 
         return wrapper
 
-    if dec_args and callable(dec_args[0]) and not type(dec_args[0]) is type:
+    if dec_args0_is_func(dec_args):
         return decor(dec_args[0])
     else:
         return decor
