@@ -1,0 +1,11 @@
+language: python
+python:
+- "3.8"
+before_install:
+    - pip install pytest
+    - pip install pytest-cov
+    - pip install coveralls
+script:
+  - pytest  --cov=exdec/
+after_success:
+  - coveralls
