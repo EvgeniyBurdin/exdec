@@ -52,16 +52,17 @@ def test_wrapper(dec_data: DecData):
 
     fm = FakeManager()
 
-    wrapper(func, dec_data, fm, None, None, "exc_handler")
+    result = wrapper(func, dec_data, fm, None, None, "exc_handler")
     assert not fm.is_called["before_handler"]
     assert not fm.is_called["after_handler"]
     assert not fm.is_called["exc_handler"]
     assert dec_data.func_info.exception is None
     assert dec_data.func_info.result == RESULT_FUNC
+    assert dec_data.func_info.result == result
 
     fm.clear_handler_calls()
 
-    wrapper(
+    result = wrapper(
         func, dec_data, fm, "before_handler", "after_handler", "exc_handler"
     )
     assert fm.is_called["before_handler"]
@@ -69,22 +70,24 @@ def test_wrapper(dec_data: DecData):
     assert not fm.is_called["exc_handler"]
     assert dec_data.func_info.exception is None
     assert dec_data.func_info.result == RESULT_FUNC
+    assert dec_data.func_info.result == result
 
     fm.clear_handler_calls()
 
-    wrapper(func_with_exception, dec_data, fm, None, None, "exc_handler")
+    result = wrapper(func_with_exception, dec_data, fm, None, None, "exc_handler")
     assert not fm.is_called["before_handler"]
     assert not fm.is_called["after_handler"]
     assert fm.is_called["exc_handler"]
     assert isinstance(dec_data.func_info.exception, Exception)
     assert dec_data.func_info.result is None
+    assert dec_data.func_info.result == result
 
 
 def test_async_wrapper(dec_data: DecData):
 
     fm = FakeManager()
 
-    asyncio.run(async_wrapper(
+    result = asyncio.run(async_wrapper(
         async_func, dec_data, fm, None, None, "exc_handler"
     ))
     assert not fm.is_called["before_handler"]
@@ -92,10 +95,11 @@ def test_async_wrapper(dec_data: DecData):
     assert not fm.is_called["exc_handler"]
     assert dec_data.func_info.exception is None
     assert dec_data.func_info.result == RESULT_FUNC
+    assert dec_data.func_info.result == result
 
     fm.clear_handler_calls()
 
-    asyncio.run(async_wrapper(
+    result = asyncio.run(async_wrapper(
         async_func, dec_data, fm,
         "before_handler", "after_handler", "exc_handler"
     ))
@@ -104,10 +108,11 @@ def test_async_wrapper(dec_data: DecData):
     assert not fm.is_called["exc_handler"]
     assert dec_data.func_info.exception is None
     assert dec_data.func_info.result == RESULT_FUNC
+    assert dec_data.func_info.result == result
 
     fm.clear_handler_calls()
 
-    asyncio.run(async_wrapper(
+    result = asyncio.run(async_wrapper(
         async_func_with_exception, dec_data, fm, None, None, "exc_handler"
     ))
     assert not fm.is_called["before_handler"]
@@ -115,3 +120,4 @@ def test_async_wrapper(dec_data: DecData):
     assert fm.is_called["exc_handler"]
     assert isinstance(dec_data.func_info.exception, Exception)
     assert dec_data.func_info.result is None
+    assert dec_data.func_info.result == result
