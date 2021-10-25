@@ -18,9 +18,9 @@ Decorator for catching exceptions in functions and methods.
 |----------------------------------------- |---------------------------------------- |----------------------------------- |
 | All positional arguments (i.e. `*args`)  | `Type[Exception]`                       | `Exception`                        |
 | `exclude`                                | `bool`                                  | `False`                            |
-| `before_handler`                         | `Optional[Callable[[FuncInfo], None]]`  | `None`                             |
-| `after_handler`                          | `Optional[Callable[[FuncInfo], None]]`  | `None`                             |
-| `exc_handler`                            | `Callable[[FuncInfo], Any]`             | `exdec.utils.default_exc_handler`  |
+| `before_handler`                         | `Optional[Callable[[FuncInfo],None]]`  | `None`                             |
+| `after_handler`                          | `Optional[Callable[[FuncInfo],None]]`  | `None`                             |
+| `exc_handler`                            | `Callable[[FuncInfo],Any]`             | `exdec.utils.default_exc_handler`  |
 | `manager`                                | `exdec.manager.Manager`                 | `Manager()`                        |
 
 If `exclude` set to `False`, then `exc_handler` will handle exceptions from `*args`.  If set to `True`, then `exc_handler` will handle all exceptions except those specified in `*args`.
