@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='exdec',
-    version='0.4.2',
+    version='1.0.0',
     license='MIT',
     author='Evgeniy Burdin',
     author_email='e.s.burdin@gmail.com',
