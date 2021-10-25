@@ -1,5 +1,4 @@
 import asyncio
-from typing import Callable
 
 from exdec.data_classes import DecData
 from exdec.decorator import _async_wrapper as async_wrapper
@@ -30,19 +29,26 @@ class FakeManager:
         }
 
 
+RESULT_FUNC = 555
+
+
+def func():
+    return RESULT_FUNC
+
+
 def func_with_exception():
     return 1 / 0
 
 
 async def async_func():
-    pass
+    return RESULT_FUNC
 
 
 async def async_func_with_exception():
     return 1 / 0
 
 
-def test_wrapper(func: Callable, dec_data: DecData):
+def test_wrapper(dec_data: DecData):
 
     fm = FakeManager()
 
@@ -51,6 +57,7 @@ def test_wrapper(func: Callable, dec_data: DecData):
     assert not fm.is_called["after_handler"]
     assert not fm.is_called["exc_handler"]
     assert dec_data.func_info.exception is None
+    assert dec_data.func_info.result == RESULT_FUNC
 
     fm.clear_handler_calls()
 
@@ -61,6 +68,7 @@ def test_wrapper(func: Callable, dec_data: DecData):
     assert fm.is_called["after_handler"]
     assert not fm.is_called["exc_handler"]
     assert dec_data.func_info.exception is None
+    assert dec_data.func_info.result == RESULT_FUNC
 
     fm.clear_handler_calls()
 
@@ -69,6 +77,7 @@ def test_wrapper(func: Callable, dec_data: DecData):
     assert not fm.is_called["after_handler"]
     assert fm.is_called["exc_handler"]
     assert isinstance(dec_data.func_info.exception, Exception)
+    assert dec_data.func_info.result is None
 
 
 def test_async_wrapper(dec_data: DecData):
@@ -82,6 +91,7 @@ def test_async_wrapper(dec_data: DecData):
     assert not fm.is_called["after_handler"]
     assert not fm.is_called["exc_handler"]
     assert dec_data.func_info.exception is None
+    assert dec_data.func_info.result == RESULT_FUNC
 
     fm.clear_handler_calls()
 
@@ -93,6 +103,7 @@ def test_async_wrapper(dec_data: DecData):
     assert fm.is_called["after_handler"]
     assert not fm.is_called["exc_handler"]
     assert dec_data.func_info.exception is None
+    assert dec_data.func_info.result == RESULT_FUNC
 
     fm.clear_handler_calls()
 
@@ -103,3 +114,4 @@ def test_async_wrapper(dec_data: DecData):
     assert not fm.is_called["after_handler"]
     assert fm.is_called["exc_handler"]
     assert isinstance(dec_data.func_info.exception, Exception)
+    assert dec_data.func_info.result is None
