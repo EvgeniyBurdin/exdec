@@ -74,7 +74,9 @@ def test_wrapper(dec_data: DecData):
 
     fm.clear_handler_calls()
 
-    result = wrapper(func_with_exception, dec_data, fm, None, None, "exc_handler")
+    result = wrapper(
+        func_with_exception, dec_data, fm, None, None, "exc_handler"
+    )
     assert not fm.is_called["before_handler"]
     assert not fm.is_called["after_handler"]
     assert fm.is_called["exc_handler"]
