@@ -34,4 +34,9 @@ jobs:
     - name: Test with pytest
       run: |
         export PYTHONPATH=/exdec:$PYTHONPATH
-        pytest --cov=exdec/
+        pytest --cov=exdec/ --cov-report=xml
+    - name: "Upload coverage to Codecov"
+      uses: codecov/codecov-action@v2
+      with:
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
