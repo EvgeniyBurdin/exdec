@@ -128,6 +128,6 @@ def test_async_wrapper(dec_data: DecData):
 
 def test_dec_args0_is_func(func):
 
-    assert dec_args0_is_func((func, ))
-    assert not dec_args0_is_func(tuple())
-    assert not dec_args0_is_func((Exception, ))
+    assert dec_args0_is_func(dec_args=(func, ))
+    assert not dec_args0_is_func(dec_args=tuple())
+    assert not dec_args0_is_func(dec_args=(Exception, ))
