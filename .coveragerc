@@ -1,5 +1,0 @@
-[report]
-include =
-    exdec/*.py
-
-show_missing = true
