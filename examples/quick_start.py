@@ -33,7 +33,7 @@ HANDLER_RESULT = 0.0
 
 
 def exc_handler(func_info: FuncInfo) -> float:
-    msg = f"Caught an exception, func_info={func_info}."
+    msg = f"Caught an exception! func_info={func_info}."
     print(f"{msg} Result changed to {HANDLER_RESULT}")
     return HANDLER_RESULT
 
@@ -84,9 +84,8 @@ assert math_functions.safe_div_5(3, 0) is None
 # 6 --------------------------------------------------------------------------
 
 def exc_handler_reraise(func_info: FuncInfo) -> float:
-    exc = func_info.exception
-    print(f"Caught an exception, func_info={func_info}. \n RERAISE!")
-    raise exc
+    print(f"Caught an exception! func_info={func_info}. \n RERAISE!")
+    raise func_info.exception
 
 
 # Catching only (MyException_1, ZeroDivisionError) and reraise

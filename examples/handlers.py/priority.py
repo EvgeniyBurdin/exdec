@@ -57,7 +57,7 @@ man_handlers = ManagerHandlers()
 
 
 manager = Manager(
-    # override only after_handler and exc_handler
+    # only after_handler and exc_handler
     after_handler=man_handlers.after,
     exc_handler=man_handlers.exc
 )
@@ -100,9 +100,9 @@ biz()  # `ind_handlers.before` and `man_handlers.after`
 print()
 
 
-@custom_catch(before_handler=ind_handlers.before, exc_handler=ind_handlers.exc)
+@custom_catch(before_handler=ind_handlers.before)
 def bizzzz():
     return 1 / 0
 
 
-bizzzz()  # `ind_handlers.before` and `ind_handlers.exc`
+bizzzz()  # `ind_handlers.before` and `dec_handlers.exc`
