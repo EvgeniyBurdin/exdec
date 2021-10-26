@@ -57,7 +57,8 @@ man_handlers = ManagerHandlers()
 
 
 manager = Manager(
-    # only after_handler and exc_handler
+    # All three kinds of handlers can be passed here.
+    # But for now, we'll only pass two.
     after_handler=man_handlers.after,
     exc_handler=man_handlers.exc
 )
