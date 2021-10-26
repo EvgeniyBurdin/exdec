@@ -18,12 +18,15 @@ Decorator for catching exceptions in functions and methods. And also with the po
 |----------------------------------------- |---------------------------------------- |----------------------------------- |
 | All positional arguments (i.e. `*args`)  | `Type[Exception]`                       | `Exception`                        |
 | `exclude`                                | `bool`                                  | `False`                            |
-| `before_handler`                         | `Optional[Callable[[FuncInfo],None]]`  | `None`                             |
-| `after_handler`                          | `Optional[Callable[[FuncInfo],None]]`  | `None`                             |
-| `exc_handler`                            | `Callable[[FuncInfo],Any]`             | `exdec.utils.default_exc_handler`  |
+| `before_handler`                         | `Optional[Callable[[FuncInfo],None]]`   | `None`                             |
+| `after_handler`                          | `Optional[Callable[[FuncInfo],None]]`   | `None`                             |
+| `exc_handler`                            | `Callable[[FuncInfo],Any]`              | `exdec.utils.default_exc_handler`  |
+| `extra`                                  | `Any`                                   | `None`                             |
 | `manager`                                | `exdec.manager.Manager`                 | `Manager()`                        |
 
 If `exclude` set to `False`, then `exc_handler` will handle exceptions from `*args`.  If set to `True`, then `exc_handler` will handle all exceptions except those specified in `*args`.
+
+In the `extra` argument you can specify arbitrary data to be passed to the handlers.
 
 ```python
 # exdec/data_classes.py
@@ -44,7 +47,8 @@ class FuncInfo:
     kwargs: Dict[str, Any]
     result: Any = None
     exception: Optional[Exception] = None
-
+    extra: Any = None
+    
 ...
 ```
 

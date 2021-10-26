@@ -20,6 +20,7 @@ class FuncInfo:
     kwargs: Dict[str, Any]
     result: Any = None
     exception: Optional[Exception] = None
+    extra: Any = None
 
 
 @dataclass

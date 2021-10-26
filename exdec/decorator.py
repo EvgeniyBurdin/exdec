@@ -62,6 +62,7 @@ def catch(
     after_handler: Optional[Callable[[FuncInfo], None]] = None,
     exc_handler: Optional[Callable[[FuncInfo], Any]] = None,
     manager: Manager = manager,
+    extra: Any = None,
 ):
     exceptions = manager.make_exceptions(dec_args)
 
@@ -73,7 +74,9 @@ def catch(
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
-            func_info = FuncInfo(func=func, args=args, kwargs=kwargs)
+            func_info = FuncInfo(
+                func=func, args=args, kwargs=kwargs, extra=extra
+            )
             dec_data = DecData(
                 exceptions=exceptions, exclude=exclude, func_info=func_info,
             )
