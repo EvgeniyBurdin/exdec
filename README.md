@@ -28,6 +28,8 @@ If `exclude` set to `False`, then `exc_handler` will handle exceptions from `*ar
 
 In the `extra` argument you can specify arbitrary data to be passed to the handlers.
 
+All handlers have an `FuncInfo` argument:
+
 ```python
 # exdec/data_classes.py
 
@@ -149,9 +151,8 @@ assert math_functions.safe_div_5(3, 0) is None
 # 6 --------------------------------------------------------------------------
 
 def exc_handler_reraise(func_info: FuncInfo) -> float:
-    exc = func_info.exception
     print(f"Caught an exception! func_info={func_info}. \n RERAISE!")
-    raise exc
+    raise func_info.exception
 
 
 # Catching only (MyException_1, ZeroDivisionError) and reraise
