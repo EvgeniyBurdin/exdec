@@ -19,17 +19,12 @@ def before_handler(func_info: FuncInfo):
 
 
 def after_handler(func_info: FuncInfo):
-    logger.debug(f"After: func_info={func_info}.")
     # Changing result
     func_info.result /= 2
-    logger.debug(f"After change result: func_info={func_info}.")
+    logger.debug(f"After: func_info={func_info}.")
 
 
 def exc_handler(func_info: FuncInfo):
-    # Recovering args
-    x = func_info.args[0]
-    y = func_info.args[1]
-    func_info.args = (int(x/2), y)
     logger.error(f"Caught an exception! func_info={func_info}. \nRERAISE")
     raise func_info.exception
 
