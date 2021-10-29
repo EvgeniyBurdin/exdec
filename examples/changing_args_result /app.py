@@ -10,7 +10,7 @@ formatter = ColorFormatter(log_format)
 logger = get_stream_logger("app_name", logging.DEBUG, formatter)
 
 
-def before_handler(func_info: FuncInfo) -> float:
+def before_handler(func_info: FuncInfo):
     logger.debug(f"Before: func_info={func_info}.")
     # Changing args
     x = func_info.args[0]
@@ -18,14 +18,14 @@ def before_handler(func_info: FuncInfo) -> float:
     func_info.args = (x*2, y)
 
 
-def after_handler(func_info: FuncInfo) -> float:
+def after_handler(func_info: FuncInfo):
     logger.debug(f"After: func_info={func_info}.")
     # Changing result
     func_info.result /= 2
     logger.debug(f"After change result: func_info={func_info}.")
 
 
-def exc_handler(func_info: FuncInfo) -> float:
+def exc_handler(func_info: FuncInfo):
     # Recovering args
     x = func_info.args[0]
     y = func_info.args[1]
