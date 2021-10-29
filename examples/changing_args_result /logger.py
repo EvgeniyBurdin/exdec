@@ -97,7 +97,7 @@ if __name__ == "__main__":
     log_format = "%(asctime)s %(levelname)s %(name)s - %(message)s"
     formatter = ColorFormatter(log_format)
     # formatter = logging.Formatter(log_format, datefmt="%Y%m%d %H:%M:%S")
-    logger = get_stream_logger("deflog", logging.DEBUG, formatter)
+    logger = get_stream_logger("log", logging.DEBUG, formatter)
 
     logger.debug("debug message")
     logger.info("info message")
