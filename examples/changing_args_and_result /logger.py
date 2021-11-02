@@ -26,7 +26,7 @@ RESET = f"{ESC_SEQ}0m"
 
 
 DEFAULT_COLORS = {
-    logging.DEBUG: TermColor(Color.BLUE),
+    # logging.DEBUG: TermColor(Color.BLUE),
     logging.INFO: TermColor(Color.WHITE),
     logging.WARNING: TermColor(Color.YELLOW),
     logging.ERROR: TermColor(Color.RED),
@@ -60,15 +60,21 @@ class ColorFormatter(logging.Formatter):
 
         return result
 
-    def make_color_log(self, levelno) -> str:
+    def make_color_log(self, levelno, usual_log: str) -> str:
 
-        return f"{self._termcolors.get(levelno)}{self._fmt}{RESET}"
+        color = self._termcolors.get(
+            levelno, f"{ESC_SEQ}3{Color.WHITE.value}m"
+        )
+
+        return f"{color}{usual_log}{RESET}"
 
     def format(self, record):
 
-        formatter = logging.Formatter(self.make_color_log(record.levelno))
+        usual_log = super().format(record)
 
-        return formatter.format(record)
+        color_log = self.make_color_log(record.levelno, usual_log)
+
+        return color_log
 
 
 def get_stream_handler(level, formatter: logging.Formatter):
