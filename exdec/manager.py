@@ -54,7 +54,7 @@ class Manager:
         before_handler: Optional[Callable[[FuncInfo], None]],
         after_handler: Optional[Callable[[FuncInfo], None]],
         exc_handler: Optional[Callable[[FuncInfo], Any]],
-    ) -> Tuple[Callable[[FuncInfo], Any]]:
+    ) -> Tuple:
 
         if before_handler is None:
             before_handler = self.before_handler
